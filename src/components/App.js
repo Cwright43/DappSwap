@@ -22,9 +22,14 @@ import {
 
 function App() {
 
+  const [token1Balance, setToken1Balance] = useState(0)
+  const [token2Balance, setToken2Balance] = useState(0)
+  const [amm, setAMM] = useState(0)
+
   const dispatch = useDispatch()
 
   const loadBlockchainData = async () => {
+
     // Initiate provider
     const provider = await loadProvider(dispatch)
 
@@ -46,6 +51,7 @@ function App() {
     await loadAMM(provider, chainId, dispatch)
   }
 
+
   useEffect(() => {
     loadBlockchainData()
   }, []);
@@ -58,6 +64,8 @@ function App() {
 
         <hr />
 
+
+
         <Tabs />
 
         <Routes>
@@ -66,6 +74,10 @@ function App() {
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
         </Routes>
+
+        <h6 className='my-4 text-left'>Total DAPP in Liquidity: </h6>
+        <h6 className='my-4 text-left'>Total USD in Liquidity: </h6>
+
       </HashRouter>
     </Container>
   )
