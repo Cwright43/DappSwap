@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import { ethers } from 'ethers'
@@ -12,6 +12,10 @@ import Deposit from './Deposit';
 import Withdraw from './Withdraw';
 import Charts from './Charts';
 
+import Button from 'react-bootstrap/Button' 
+import Card from 'react-bootstrap/Card' 
+import Collapse from 'react-bootstrap/Collapse' 
+
 import {
   loadProvider,
   loadNetwork,
@@ -22,9 +26,16 @@ import {
 
 function App() {
 
-  const [token1Balance, setToken1Balance] = useState(0)
-  const [token2Balance, setToken2Balance] = useState(0)
   const [amm, setAMM] = useState(0)
+  const [tokenBalance, setTokenBalance] = useState(0)
+
+  const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
+
+  const token1 = useSelector(state => state.amm.token1)
+  const token2 = useSelector(state => state.amm.token2)
+  const poolDAI = useSelector(state => state.amm.poolDAI)
+  const poolWETH = useSelector(state => state.amm.poolWETH)
 
   const dispatch = useDispatch()
 
@@ -49,6 +60,13 @@ function App() {
     // Initiate contracts
     await loadTokens(provider, chainId, dispatch)
     await loadAMM(provider, chainId, dispatch)
+
+  }
+
+  const testHandler = async (e) => {
+
+      console.log("Testing...")
+
   }
 
 
@@ -61,10 +79,42 @@ function App() {
       <HashRouter>
 
         <Navigation />
-
+    <>
+      <Button
+        onClick={() => setOpen(!open)}
+        aria-controls="example-collapse-text"
+        aria-expanded={open}
+      >
+        DappSwap Liquidity 
+      </Button>
+      <div style={{ minHeight: '100px' }}>
+        <Collapse in={open} dimension="width">
+          <div id="example-collapse-text">
+            <Card body style={{ width: '400px' }}>
+            <h6>DAPP Liquidity: {parseFloat(token1).toFixed(2)}</h6>
+            <h6>USD Liquidity: {parseFloat(token2).toFixed(2)}</h6>
+            </Card>
+          </div>
+        </Collapse>
+      </div>
+    </>
         <hr />
 
+        <h5 className='my-4 text-left'>Total DAPP in Liquidity: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h5>
+        <h5 className='my-4 text-left'>Total USD in Liquidity: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h5>
+        <h5 className='my-4 text-left'>Total DAI in Uniswap: <strong>{parseFloat(poolDAI).toFixed(2)}</strong> tokens</h5>
+        <h5 className='my-4 text-left'>Total WETH in Uniswap: <strong>{parseFloat(poolWETH).toFixed(2)}</strong> tokens</h5>
+        <h5 className='my-4 text-left'>DAI/WETH Rate: <strong>{parseFloat(poolDAI / poolWETH).toFixed(2)}</strong> tokens</h5>
 
+              <p>
+                <Button 
+                  variant="primary" 
+                  style={{ width: '20%' }}
+                  onClick={() => testHandler()}
+                  >
+                  Test Button
+                </Button>
+              </p>
 
         <Tabs />
 
@@ -74,9 +124,6 @@ function App() {
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
         </Routes>
-
-        <h6 className='my-4 text-left'>Total DAPP in Liquidity: </h6>
-        <h6 className='my-4 text-left'>Total USD in Liquidity: </h6>
 
       </HashRouter>
     </Container>

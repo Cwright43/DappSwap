@@ -17,6 +17,10 @@ import {
   sharesLoaded,
   token1Loaded,
   token2Loaded,
+  token3Loaded,
+  token4Loaded,
+  poolDAILoaded,
+  poolWETHLoaded,
   swapsLoaded,
   depositRequest,
   depositSuccess,
@@ -61,6 +65,8 @@ export const loadTokens = async (provider, chainId, dispatch) => {
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
 
+  // Change contract values as neeeded here
+
   dispatch(setContracts([dapp, usd]))
   dispatch(setSymbols([await dapp.symbol(), await usd.symbol()]))
 }
@@ -85,7 +91,7 @@ export const loadBalances = async (amm, tokens, account, dispatch) => {
     ethers.utils.formatUnits(balance2.toString(), 'ether')
   ]))
 
-  const shares = await amm.shares(account)
+  const shares = 100 // await amm.shares(account)
   dispatch(sharesLoaded(ethers.utils.formatUnits(shares.toString(), 'ether')))
 
   const token1 = await amm.token1Balance()
@@ -94,7 +100,33 @@ export const loadBalances = async (amm, tokens, account, dispatch) => {
   const token2 = await amm.token2Balance()
   dispatch(token2Loaded(ethers.utils.formatUnits(token2.toString(), 'ether')))
 
+  const poolDAI = await amm.poolDAIbalance()
+  dispatch(poolDAILoaded(ethers.utils.formatUnits(poolDAI.toString(), 'ether')))
+
+  const poolWETH = await amm.poolWETHbalance()
+  dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
+
 }
+
+export const loadAppleswap = async (provider, chainId, dispatch) => {
+  const appleswap = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
+
+  dispatch(setContract(appleswap))
+
+  return appleswap
+}
+
+export const loadBalances1 = async (appleswap, tokens, account, dispatch) => {
+
+  const token3 = await appleswap.token1Balance()
+  dispatch(token3Loaded(ethers.utils.formatUnits(token3.toString(), 'ether')))
+
+  const token4 = await appleswap.token2Balance()
+  dispatch(token4Loaded(ethers.utils.formatUnits(token4.toString(), 'ether')))
+
+}
+
+
 
 
 // ------------------------------------------------------------------------------
@@ -190,7 +222,5 @@ export const loadAllSwaps = async (provider, amm, dispatch) => {
 // FETCH AMM BALANCES
 
 export const fetchBalance1 = async (provider, amm, dispatch) => {
-
-
 
 }

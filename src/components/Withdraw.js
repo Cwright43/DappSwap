@@ -6,7 +6,8 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
-import { ethers } from 'ethers'
+import { ethers } from 'ethers';
+import { NumericFormat } from 'react-number-format';
 
 import Alert from './Alert'
 
@@ -64,14 +65,9 @@ const Withdraw = () => {
 
             <Row>
               <Form.Text className='text-end my-2' muted>
-                Shares: {shares}
+                Shares: {parseFloat(shares).toFixed(2)}
               </Form.Text>
-              <Form.Text className='text-end my-2' muted>
-                Token 1 in Liquidity: {token1}
-              </Form.Text>
-              <Form.Text className='text-end my-2' muted>
-                Token 2 in Liquidity: {token2}
-              </Form.Text>
+
               <InputGroup>
                 <Form.Control
                   type="number"

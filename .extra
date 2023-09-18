@@ -1,0 +1,131 @@
+curl command
+------------
+
+curl --location --request POST 'localhost:8545/' --header 'Content-Type: application/json' --data-raw '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
+
+
+--
+
+Mainnet Token & LP Addresses
+----------------------------
+
+DAI address - 0x6B175474E89094C44Da98b954EedeAC495271d0F
+
+USDC address - 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+
+DAI/USDC on Uniswap – 0x6c6bc977e13df9b0de53b251522280bb72383700
+
+
+
+--
+
+config.json
+-----------
+
+{
+  "31337": {
+    "dapp": {
+      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    },
+    "usd": {
+      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+    },
+    "amm": {
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+    },
+    "dappswap": {
+      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+    },
+    "appleswap": {
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+    }
+  },
+
+  "1": {
+    "dapp": {
+      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    },
+    "usd": {
+      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+    },
+    "amm": {
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+    },
+    "dappswap": {
+      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+    },
+    "appleswap": {
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+    }
+  }
+
+}
+
+--
+
+hardhat-config.js - BEFORE
+---------------------------
+
+require("@nomicfoundation/hardhat-toolbox");
+require('dotenv').config()
+
+/** @type import('hardhat/config').HardhatUserConfig */
+module.exports = {
+  solidity: "0.8.9",
+  networks: {
+    hardhat: {
+    },
+  },
+};
+
+--
+
+hardhat-config.js - AFTER
+---------------------------
+
+require("@nomicfoundation/hardhat-toolbox");
+require('dotenv').config()
+
+/** @type import('hardhat/config').HardhatUserConfig */
+module.exports = {
+  solidity: "0.8.9",
+  networks: {
+    hardhat: {
+      chainId: 31337,
+      forking: {
+        enabled: true,
+        url:  `https://eth-mainnet.g.alchemy.com/b2/ive0MJWUWOcMkA9nwlUjv3ad`,
+      }
+    }
+  }
+};
+
+--
+
+GitHub push info
+----------------
+
+Capstone Project - DEX #1 - https://github.com/Cwright43/DEX-1
+
+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 - Access key #1
+
+--
+
+Extra URL - https://github.com/Cwright43/CapstoneAMM1
+
+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 - Access key #2
+
+
+-------------
+
+Capstone Project - DEX Aggregator - https://github.com/Cwright43/Capstone-DEXAgg
+
+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 - Access key #1
+
+--
+
+Extra URL - https://github.com/Cwright43/CapstoneAggregator
+
+ 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 - Access key #2
+
+

@@ -130,9 +130,9 @@ const Swap = () => {
                 <Form.Text muted>
                   Balance: {
                     inputToken === symbols[0] ? (
-                      balances[0]
+                      parseFloat(balances[0]).toFixed(2)
                     ) : inputToken === symbols[1] ? (
-                      balances[1]
+                      parseFloat(balances[1]).toFixed(2)
                     ) : 0
                   }
                 </Form.Text>
@@ -162,9 +162,9 @@ const Swap = () => {
                 <Form.Text muted>
                   Balance: {
                     outputToken === symbols[0] ? (
-                      balances[0]
+                      parseFloat(balances[0]).toFixed(2)
                     ) : outputToken === symbols[1] ? (
-                      balances[1]
+                      parseFloat(balances[1]).toFixed(2)
                     ) : 0
                   }
                 </Form.Text>

@@ -19,11 +19,20 @@ async function main() {
   await usd.deployed()
   console.log(`USD Token deployed to: ${usd.address}\n`)
 
-  // Deploy AMM
-  const AMM = await hre.ethers.getContractFactory('AMM')
-  const amm = await AMM.deploy(dapp.address, usd.address)
 
-  console.log(`AMM contract deployed to: ${amm.address}\n`)
+  // Deploy AMM, Appleswap, Aggregator
+  const AMM = await hre.ethers.getContractFactory('AMM')
+  const Aggregator = await hre.ethers.getContractFactory('Aggregator')
+
+  const amm = await AMM.deploy(dapp.address, usd.address)
+  const appleswap = await AMM.deploy(dapp.address, usd.address)
+  const aggregator = await Aggregator.deploy(dapp.address, usd.address)
+
+  console.log(`DApp Swap contract deployed to: ${amm.address}\n`)
+  console.log(`AppleSwap contract deployed to: ${appleswap.address}\n`)
+  console.log(`Aggregator contract deployed to: ${aggregator.address}\n`)
+
+  
 
 }
 

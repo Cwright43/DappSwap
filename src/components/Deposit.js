@@ -96,10 +96,7 @@ const Deposit = () => {
 
             <Row>
               <Form.Text className='text-end my-2' muted>
-                Balance: {balances[0]}
-              </Form.Text>
-              <Form.Text className='text-end my-2' muted>
-                Balance: {token1Final}
+                Balance: {parseFloat(balances[0]).toFixed(2)}
               </Form.Text>
               <InputGroup>
                 <Form.Control
@@ -119,7 +116,7 @@ const Deposit = () => {
 
             <Row className='my-3'>
               <Form.Text className='text-end my-2' muted>
-                Balance:  {balances[1]}
+                Balance:  {parseFloat(balances[1]).toFixed(2)}
               </Form.Text>
               <InputGroup>
                 <Form.Control

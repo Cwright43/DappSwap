@@ -4,17 +4,45 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "./Token.sol";
 
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+interface IWETH is IERC20 {
+    function deposit() external payable;
+    function withdraw(uint256 amount) external;
+
+    function balanceOf(address account) external view returns (uint256);
+
+}
+
 contract AMM {
     Token public token1;
     Token public token2;
+
+    IWETH public dai;
+    IWETH public weth;
+    uint256 public poolDAIbalance;
+    uint256 public poolWETHbalance;
+
+    address public constant wethAddress = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    address public constant daiAddress = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+    address public constant daiWETHpool = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
+
+    // uint256 public dexToken1Balance;
+    // uint256 public dexToken2Balance;
 
     uint256 public token1Balance;
     uint256 public token2Balance;
     uint256 public K;
 
+    uint256 public listCount;
+
     uint256 public totalShares;
     mapping(address => uint256) public shares;
     uint256 constant PRECISION = 10**18;
+
+    mapping(uint256 => address) public dexlist;
 
     event Swap(
         address user,
@@ -30,6 +58,24 @@ contract AMM {
     constructor(Token _token1, Token _token2) {
         token1 = _token1;
         token2 = _token2;
+        listCount = 0;
+        poolDAIbalance = IWETH(daiAddress).balanceOf(daiWETHpool);
+        poolWETHbalance = IWETH(wethAddress).balanceOf(daiWETHpool);
+    }
+
+    function addDEXList(address _newDEX) public {
+        dexlist[listCount] = _newDEX;
+        listCount++;
+    }
+
+    function fetchT1Balance(uint256 _dexListing) public view returns (uint256 dexToken1Balance) {
+
+        dexToken1Balance = token1.balanceOf(dexlist[_dexListing]);
+    }
+
+    function fetchT2Balance(uint256 _dexListing) public view returns (uint256 dexToken2Balance) {
+
+        dexToken2Balance = token2.balanceOf(dexlist[_dexListing]);
     }
 
     function addLiquidity(uint256 _token1Amount, uint256 _token2Amount) external {
@@ -179,7 +225,7 @@ contract AMM {
     function calculateWithdrawAmount(uint256 _share)
         public
         view
-        returns (uint256 token1Amount, uint256 token2Amount)
+        returns(uint256 token1Amount, uint256 token2Amount)
     {
         require(_share <= totalShares, "must be less than total shares");
         token1Amount = (_share * token1Balance) / totalShares;

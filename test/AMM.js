@@ -13,11 +13,18 @@ describe('AMM', () => {
       deployer,
       liquidityProvider,
       investor1,
-      investor2
+      investor2,
+      index1,
+      index2
 
   let token1,
       token2,
       amm
+
+  let dappswapT1,
+      dappswapT2,
+      appleswapT1,
+      appleswapT2
 
   beforeEach(async () => {
     // Setup Accounts
@@ -26,6 +33,8 @@ describe('AMM', () => {
     liquidityProvider = accounts[1]
     investor1 = accounts[2]
     investor2 = accounts[3]
+    index1 = 0
+    index2 = 1
 
     // Deploy Token
     const Token = await ethers.getContractFactory('Token')
@@ -50,7 +59,68 @@ describe('AMM', () => {
     // Deploy AMM
     const AMM = await ethers.getContractFactory('AMM')
     amm = await AMM.deploy(token1.address, token2.address)
+
   })
+
+
+ describe('Obtain Balances', () => {
+
+ beforeEach(async () => {
+    // Setup Accounts
+
+    const ammAddress = '0x09635F643e140090A9A8Dcd712eD6285858ceBef'
+    const appleswapAddress = '0xc5a5C42992dECbae36851359345FE25997F5C42d'
+
+  // Add DEX addresses to mapping list
+
+    transaction = await amm.addDEXList(ammAddress)
+    await transaction.wait()
+
+    console.log()
+
+    transaction = await amm.addDEXList(appleswapAddress)
+    await transaction.wait()
+
+    amount = tokens(100000)
+    transaction = await token1.connect(deployer).approve(amm.address, amount)
+    await transaction.wait()
+
+    transaction = await token2.connect(deployer).approve(amm.address, amount)
+    await transaction.wait()
+
+    // Deployer adds liquidity
+    transaction = await amm.connect(deployer).addLiquidity(amount, amount)
+    await transaction.wait()
+
+    index1 = 0
+    index2 = 1
+
+    dappswapT1 = await amm.fetchT1Balance(index1)
+
+    dappswapT2 = await amm.fetchT2Balance(index1)
+
+    console.log(ethers.utils.formatEther(dappswapT1))
+
+    console.log(ethers.utils.formatEther(dappswapT2))
+
+    appleswapT1 = await amm.fetchT1Balance(index2)
+
+    appleswapT2 = await amm.fetchT2Balance(index2)
+
+    console.log(ethers.utils.formatEther(appleswapT1))
+
+    console.log(ethers.utils.formatEther(appleswapT2))
+
+
+     })
+
+    it('is gaaaaay', async () => {
+      expect(amm.address).to.not.equal(0x0)
+     })
+
+  })
+
+
 
   describe('Deployment', () => {
 
