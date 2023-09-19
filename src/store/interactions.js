@@ -19,6 +19,8 @@ import {
   token2Loaded,
   token3Loaded,
   token4Loaded,
+  token5Loaded,
+  token6Loaded,
   poolDAILoaded,
   poolWETHLoaded,
   swapsLoaded,
@@ -79,6 +81,21 @@ export const loadAMM = async (provider, chainId, dispatch) => {
   return amm
 }
 
+export const loadDappAppleUSD = async (provider, chainId, dispatch) => {
+  const dappAppleUSD = new ethers.Contract(config[chainId].dappAppleUSD.address, AMM_ABI, provider)
+
+  dispatch(setContract(dappAppleUSD))
+
+  return dappAppleUSD
+}
+
+export const loadAppleswap = async (provider, chainId, dispatch) => {
+  const appleswap = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
+
+  dispatch(setContract(appleswap))
+
+  return appleswap
+}
 
 // ------------------------------------------------------------------------------
 // LOAD BALANCES & SHARES
@@ -105,16 +122,21 @@ export const loadBalances = async (amm, tokens, account, dispatch) => {
 
   const poolWETH = await amm.poolWETHbalance()
   dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
+}
+
+export const loadDappAppleUSDBalances = async (dappAppleUSD, tokens, account, dispatch) => {
+
+  const token5 = await dappAppleUSD.token1Balance()
+  dispatch(token5Loaded(ethers.utils.formatUnits(token5.toString(), 'ether')))
+
+  const token6 = await dappAppleUSD.token2Balance()
+  dispatch(token6Loaded(ethers.utils.formatUnits(token6.toString(), 'ether')))
+
 
 }
 
-export const loadAppleswap = async (provider, chainId, dispatch) => {
-  const appleswap = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
 
-  dispatch(setContract(appleswap))
 
-  return appleswap
-}
 
 export const loadBalances1 = async (appleswap, tokens, account, dispatch) => {
 

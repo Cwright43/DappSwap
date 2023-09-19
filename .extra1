@@ -15,10 +15,6 @@ import Charts from './Charts';
 import Button from 'react-bootstrap/Button' 
 import Card from 'react-bootstrap/Card' 
 import Collapse from 'react-bootstrap/Collapse' 
-import ListGroup from 'react-bootstrap/ListGroup'
-
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 
 // ABIs: Import your contract ABIs here
 import AMM_ABI from '../abis/AMM.json'
@@ -32,27 +28,33 @@ import {
   loadNetwork,
   loadAccount,
   loadTokens,
-  loadAMM
+  loadAMM,
+  loadDappAppleUSD
 } from '../store/interactions'
 
 function App() {
 
+  const [dappAppleUSD, setDappAppleUSD] = useState(null)
   const [tokenBalance, setTokenBalance] = useState(0)
+
+  const [apple, setApple] = useState(false);
+  const [usd, setUSD] = useState(false);
 
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
 
-  const [usd, setUSD] = useState(null)
-  const [dapp, setDapp] = useState(null)
-  const [apple, setApple] = useState(null)
+  const [apple1Balance, setApple1Balance] = useState(0);
+  const [usd1Balance, setUSD1Balance] = useState(0);
 
-  const [dappAppleUSD, setDappAppleUSD] = useState(null)
-
-  const [appleBalance, setAppleBalance] = useState(0)
-  const [usdBalance2, setUSDBalance2] = useState(0)
-
+  // Load DAPP / USD pool tokens
   const token1 = useSelector(state => state.amm.token1)
   const token2 = useSelector(state => state.amm.token2)
+
+  // Load Apple / USD pool tokens
+  const token5 = useSelector(state => state.amm.token5)
+  const token6 = useSelector(state => state.amm.token6)
+
+  // Load DAI / WETH tokens from Uniswap Mainnet
   const poolDAI = useSelector(state => state.amm.poolDAI)
   const poolWETH = useSelector(state => state.amm.poolWETH)
 
@@ -65,6 +67,26 @@ function App() {
 
     // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
     const chainId = await loadNetwork(provider, dispatch)
+
+    // Initiate contracts
+    const dappAppleUSD = new ethers.Contract(config[1].dappAppleUSD.address, AMM_ABI, provider)
+    setDappAppleUSD(dappAppleUSD)
+
+    // Initiate Tokens
+    let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
+    setApple(apple)
+
+    let usd = new ethers.Contract(config[1].usd.address, TOKEN_ABI, provider)
+    setUSD(usd)
+
+    // Initiate APPL / USD balances
+    let apple1Balance = await apple.balanceOf(dappAppleUSD.address)
+    apple1Balance = ethers.utils.formatUnits(apple1Balance, 18)
+    setApple1Balance(apple1Balance)
+
+    let usd1Balance = await usd.balanceOf(dappAppleUSD.address)
+    usd1Balance = ethers.utils.formatUnits(usd1Balance, 18)
+    setUSD1Balance(usd1Balance)
 
     // Reload page when network changes
     window.ethereum.on('chainChanged', () => {
@@ -79,33 +101,9 @@ function App() {
     // Initiate contracts
     await loadTokens(provider, chainId, dispatch)
     await loadAMM(provider, chainId, dispatch)
+    await loadDappAppleUSD(provider, chainId, dispatch)
 
-    // Load tokens
-    let usd = new ethers.Contract(config[1].usd.address, TOKEN_ABI, provider)
-    setUSD(usd)
-
-    let dapp = new ethers.Contract(config[1].dapp.address, TOKEN_ABI, provider)
-    setDapp(dapp)
-
-    let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
-    setApple(apple)
-
-    // Load Dapp APPL / USD trading pair
-
-    const dappAppleUSD = new ethers.Contract(config[1].dappAppleUSD.address, AMM_ABI, provider)
-    setDappAppleUSD(dappAppleUSD)
-
-    // Load APPL balance for Dapp Swap
-
-    let appleBalance = await apple.balanceOf(dappAppleUSD.address)
-    appleBalance = ethers.utils.formatUnits(appleBalance, 18)
-    setAppleBalance(appleBalance)
-
-    let usdBalance2 = await usd.balanceOf(dappAppleUSD.address)
-    usdBalance2 = ethers.utils.formatUnits(usdBalance2, 18)
-    setUSDBalance2(usdBalance2)
-
-  }
+    }
 
   const testHandler = async (e) => {
 
@@ -129,14 +127,14 @@ function App() {
         aria-controls="example-collapse-text"
         aria-expanded={open}
       >
-        DappSwap Liquidity 
+        DAPP / USD Liquidity 
       </Button>
       <div style={{ minHeight: '100px' }}>
         <Collapse in={open} dimension="width">
           <div id="example-collapse-text">
-            <Card body style={{ width: '400px' }}>
-            <h6>DAPP Liquidity: {parseFloat(token1).toFixed(2)}</h6>
-            <h6>USD Liquidity: {parseFloat(token2).toFixed(2)}</h6>
+            <Card body style={{ width: '300px' }}>
+            <h5>DAPP Liquidity: <strong>{parseFloat(token1).toFixed(2)}</strong></h5>
+            <h5>USD Liquidity: <strong>{parseFloat(token2).toFixed(2)}</strong></h5>
             </Card>
           </div>
         </Collapse>
@@ -144,13 +142,12 @@ function App() {
     </>
         <hr />
 
-        <h5 className='my-4 text-left'>Total DAPP in Liquidity: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h5>
-        <h5 className='my-4 text-left'>Total USD in Liquidity: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h5>
         <h5 className='my-4 text-left'>Total DAI in Uniswap: <strong>{parseFloat(poolDAI).toFixed(2)}</strong> tokens</h5>
         <h5 className='my-4 text-left'>Total WETH in Uniswap: <strong>{parseFloat(poolWETH).toFixed(2)}</strong> tokens</h5>
         <h5 className='my-4 text-left'>DAI/WETH Rate: <strong>{parseFloat(poolDAI / poolWETH).toFixed(2)}</strong></h5>
-        <h5 className='my-4 text-left'>APPL in APPL/USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
-        <h5 className='my-4 text-left'>USD in APPL/USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
+
+        <h5 className='my-4 text-left'>Apple Rate: <strong>{parseFloat(apple1Balance).toFixed(2)}</strong></h5>
+        <h5 className='my-4 text-left'>USD Token <strong>{parseFloat(usd1Balance).toFixed(2)}</strong></h5>
 
               <p>
                 <Button 

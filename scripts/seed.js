@@ -38,6 +38,10 @@ async function main() {
   const usd = await ethers.getContractAt('Token', config[chainId].usd.address)
   console.log(`USD Token fetched: ${usd.address}\n`)
 
+  // Fetch Apple Token
+  const apple = await ethers.getContractAt('Token', config[chainId].apple.address)
+  console.log(`Apple Token fetched: ${apple.address}\n`)
+
 
   /////////////////////////////////////////////////////////////
   // Distribute Tokens to Investors
@@ -68,6 +72,7 @@ async function main() {
 
   let amount = tokens(100)
   let amount1 = tokens(200)
+  let amount2 = tokens(300)
 
   console.log(`Fetching AppleSwap...\n`)
 
@@ -79,10 +84,13 @@ async function main() {
   const appleswap = await ethers.getContractAt('AMM', config[chainId].appleswap.address)
   console.log(`AppleSwap fetched: ${appleswap.address}\n`)
 
-
   // Fetch Aggregator
   const aggregator = await ethers.getContractAt('AMM', config[chainId].aggregator.address)
   console.log(`Aggregator fetched: ${aggregator.address}\n`)
+
+  // Fetch APPL / USD Pool on Dapp Swap
+  const dappAppleUSD = await ethers.getContractAt('AMM', config[chainId].dappAppleUSD.address)
+  console.log(`APPL / USD Pool on Dapp Swap fetched: ${dappAppleUSD.address}\n`)
 
 
   // Add liquidity to AMM Swap
@@ -119,6 +127,18 @@ async function main() {
 
   console.log(`Adding liquidity...\n`)
   transaction = await aggregator.connect(deployer).addLiquidity(amount1, amount1)
+  await transaction.wait()
+
+ // Add liquidity to APPL / USD on Dapp Swap
+
+  transaction = await apple.connect(deployer).approve(dappAppleUSD.address, amount2)
+  await transaction.wait()
+
+  transaction = await usd.connect(deployer).approve(dappAppleUSD.address, amount2)
+  await transaction.wait()
+
+  console.log(`Adding liquidity...\n`)
+  transaction = await dappAppleUSD.connect(deployer).addLiquidity(amount2, amount2)
   await transaction.wait()
 
   // Add DEX addresses to mapping list
