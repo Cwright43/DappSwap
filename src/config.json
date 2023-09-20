@@ -2,49 +2,49 @@
 
   "31337": {
     "dapp": {
-      "address": "0x9eb52339B52e71B1EFD5537947e75D23b3a7719B"
+      "address": "0xc075BC0f734EFE6ceD866324fc2A9DBe1065CBB1"
     },
     "usd": {
-      "address": "0x92b0d1Cc77b84973B7041CB9275d41F09840eaDd"
+      "address": "0x837a41023CF81234f89F956C94D676918b4791c1"
     },
     "apple": {
-      "address": "0x996785Fe937d92EDBF420F3Bf70Acc62ecD6f655"
+      "address": "0x04d7478fDF318C3C22cECE62Da9D78ff94807D77"
     },
     "amm": {
-      "address": "0x1Dbbf529D78d6507B0dd71F6c02f41138d828990"
+      "address": "0xd9abC93F81394Bd161a1b24B03518e0a570bDEAd"
     },
     "appleswap": {
-      "address": "0xf18774574148852771c2631d7d06E2A6c8b44fCA"
+      "address": "0xcB0f2a13098f8e841e6Adfa5B17Ec00508b27665"
     },
     "aggregator": {
-      "address": "0x9f62EE65a8395824Ee0821eF2Dc4C947a23F0f25"
+      "address": "0x37D31345F164Ab170B19bc35225Abc98Ce30b46A"
     },
     "dappAppleUSD": {
-      "address": "0x20BBE62B175134D21b10C157498b663F048672bA"
+      "address": "0x6345e50859b0Ce82D8A495ba9894C6C81de385F3"
     }
   },
 
   "1": {
     "dapp": {
-      "address": "0xbFD3c8A956AFB7a9754C951D03C9aDdA7EC5d638"
-    },
-    "usd": {
-      "address": "0x38F6F2caE52217101D7CA2a5eC040014b4164E6C"
-    },
-    "apple": {
       "address": "0xc075BC0f734EFE6ceD866324fc2A9DBe1065CBB1"
     },
-    "amm": {
+    "usd": {
       "address": "0x837a41023CF81234f89F956C94D676918b4791c1"
     },
-    "appleswap": {
+    "apple": {
       "address": "0x04d7478fDF318C3C22cECE62Da9D78ff94807D77"
     },
-    "aggregator": {
+    "amm": {
       "address": "0xd9abC93F81394Bd161a1b24B03518e0a570bDEAd"
     },
-    "dappAppleUSD": {
+    "appleswap": {
       "address": "0xcB0f2a13098f8e841e6Adfa5B17Ec00508b27665"
+    },
+    "aggregator": {
+      "address": "0x37D31345F164Ab170B19bc35225Abc98Ce30b46A"
+    },
+    "dappAppleUSD": {
+      "address": "0x6345e50859b0Ce82D8A495ba9894C6C81de385F3"
     }
   }
 

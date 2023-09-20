@@ -25,7 +25,7 @@ async function main() {
   await apple.deployed()
   console.log(`Apple Token deployed to: ${apple.address}\n`)
 
-
+  
   // Deploy AMM, Appleswap, Aggregator
   const AMM = await hre.ethers.getContractFactory('AMM')
   const Aggregator = await hre.ethers.getContractFactory('Aggregator')
@@ -34,7 +34,7 @@ async function main() {
   const appleswap = await AMM.deploy(dapp.address, usd.address)
   const aggregator = await Aggregator.deploy(dapp.address, usd.address)
 
-  const dappAppleUSD = await Aggregator.deploy(apple.address, usd.address)
+  const dappAppleUSD = await AMM.deploy(apple.address, usd.address)
 
   console.log(`DApp Swap contract deployed to: ${amm.address}\n`)
   console.log(`AppleSwap contract deployed to: ${appleswap.address}\n`)
