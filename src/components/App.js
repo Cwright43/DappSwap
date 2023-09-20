@@ -17,6 +17,12 @@ import Card from 'react-bootstrap/Card'
 import Collapse from 'react-bootstrap/Collapse' 
 import ListGroup from 'react-bootstrap/ListGroup'
 
+import wethIcon from '../WETH.png';
+import daiIcon from '../DAI.png';
+import dappIcon from '../logo.png';
+import usdIcon from '../T2-Icon.jpg';
+import appleIcon from '../T3-Icon.jpg';
+
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
@@ -144,13 +150,61 @@ function App() {
     </>
         <hr />
 
-        <h5 className='my-4 text-left'>Total DAPP in Liquidity: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h5>
-        <h5 className='my-4 text-left'>Total USD in Liquidity: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h5>
-        <h5 className='my-4 text-left'>Total DAI in Uniswap: <strong>{parseFloat(poolDAI).toFixed(2)}</strong> tokens</h5>
-        <h5 className='my-4 text-left'>Total WETH in Uniswap: <strong>{parseFloat(poolWETH).toFixed(2)}</strong> tokens</h5>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="dapptoken"
+                src={dappIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+        Total DAPP in Liquidity: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h5>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="usdtoken"
+                src={usdIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+        Total USD in Liquidity: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h5>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="daitoken"
+                src={daiIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+          Total DAI in Uniswap: <strong>{parseFloat(poolDAI).toFixed(2)}</strong> tokens</h5>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="wethtoken"
+                src={wethIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+          Total WETH in Uniswap: <strong>{parseFloat(poolWETH).toFixed(2)}</strong> tokens</h5>
         <h5 className='my-4 text-left'>DAI/WETH Rate: <strong>{parseFloat(poolDAI / poolWETH).toFixed(2)}</strong></h5>
-        <h5 className='my-4 text-left'>APPL in APPL/USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
-        <h5 className='my-4 text-left'>USD in APPL/USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="appletoken"
+                src={appleIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+        APPL in APPL/USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="usdtoken"
+                src={usdIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+        USD in APPL/USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
 
               <p>
                 <Button 
