@@ -73,6 +73,7 @@ async function main() {
   let amount = tokens(100)
   let amount1 = tokens(200)
   let amount2 = tokens(300)
+  let amount3 = tokens(400)
 
   console.log(`Fetching AppleSwap...\n`)
 
@@ -92,6 +93,9 @@ async function main() {
   const dappAppleUSD = await ethers.getContractAt('AMM', config[chainId].dappAppleUSD.address)
   console.log(`APPL / USD Pool on Dapp Swap fetched: ${dappAppleUSD.address}\n`)
 
+  // Fetch APPL / USD Pool on Apple Swap
+  const appleAppleUSD = await ethers.getContractAt('AMM', config[chainId].appleAppleUSD.address)
+  console.log(`APPL / USD Pool on Apple Swap fetched: ${appleAppleUSD.address}\n`)
 
   // Add liquidity to AMM Swap
 
@@ -140,6 +144,18 @@ async function main() {
   console.log(`Adding liquidity...\n`)
   transaction = await dappAppleUSD.connect(deployer).addLiquidity(amount2, amount2)
   await transaction.wait()
+
+   // Add liquidity to APPL / USD on Apple Swap
+
+   transaction = await apple.connect(deployer).approve(appleAppleUSD.address, amount3)
+   await transaction.wait()
+ 
+   transaction = await usd.connect(deployer).approve(appleAppleUSD.address, amount3)
+   await transaction.wait()
+ 
+   console.log(`Adding liquidity...\n`)
+   transaction = await appleAppleUSD.connect(deployer).addLiquidity(amount3, amount3)
+   await transaction.wait()
 
   // Add DEX addresses to mapping list
 
