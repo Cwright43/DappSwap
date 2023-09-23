@@ -38,12 +38,19 @@ async function main() {
   const dappAppleUSD = await AMM.deploy(apple.address, usd.address)
   const appleAppleUSD = await AMM.deploy(apple.address, usd.address)
 
+  // Deploy DAPP / APPL liquidity pools
+  const dappDappApple = await AMM.deploy(dapp.address, apple.address)
+  const appleDappApple = await AMM.deploy(dapp.address, apple.address)
+
   console.log(`DApp Swap contract deployed to: ${amm.address}\n`)
   console.log(`AppleSwap contract deployed to: ${appleswap.address}\n`)
   console.log(`Aggregator contract deployed to: ${aggregator.address}\n`)
 
   console.log(`APPL / USD pool on Dapp Swap deployed to: ${dappAppleUSD.address}\n`)
   console.log(`APPL / USD pool on Apple Swap deployed to: ${appleAppleUSD.address}\n`)
+
+  console.log(`DAPP / APPL pool on Dapp Swap deployed to: ${dappDappApple.address}\n`)
+  console.log(`DAPP / APPL pool on Apple Swap deployed to: ${appleDappApple.address}\n`)
 
 }
 

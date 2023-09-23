@@ -74,6 +74,8 @@ async function main() {
   let amount1 = tokens(200)
   let amount2 = tokens(300)
   let amount3 = tokens(400)
+  let amount4 = tokens(500)
+  let amount5 = tokens(600)
 
   console.log(`Fetching AppleSwap...\n`)
 
@@ -97,29 +99,13 @@ async function main() {
   const appleAppleUSD = await ethers.getContractAt('AMM', config[chainId].appleAppleUSD.address)
   console.log(`APPL / USD Pool on Apple Swap fetched: ${appleAppleUSD.address}\n`)
 
-  // Add liquidity to AMM Swap
+  // Fetch DAPP / APPLE Pool on Dapp Swap
+  const dappDappApple = await ethers.getContractAt('AMM', config[chainId].dappDappApple.address)
+  console.log(`DAPP / APPL Pool on Dapp Swap fetched: ${dappDappApple.address}\n`)
 
-  transaction = await dapp.connect(deployer).approve(amm.address, amount)
-  await transaction.wait()
-
-  transaction = await usd.connect(deployer).approve(amm.address, amount)
-  await transaction.wait()
-
-  console.log(`Adding liquidity...\n`)
-  transaction = await amm.connect(deployer).addLiquidity(amount, amount)
-  await transaction.wait()
-
-  // Add liquidity to AppleSwap
-
-  transaction = await dapp.connect(deployer).approve(appleswap.address, amount)
-  await transaction.wait()
-
-  transaction = await usd.connect(deployer).approve(appleswap.address, amount)
-  await transaction.wait()
-
-  console.log(`Adding liquidity...\n`)
-  transaction = await appleswap.connect(deployer).addLiquidity(amount, amount)
-  await transaction.wait()
+  // Fetch DAPP / APPLE Pool on Apple Swap
+  const appleDappApple = await ethers.getContractAt('AMM', config[chainId].appleDappApple.address)
+  console.log(`DAPP / APPL Pool on Apple Swap fetched: ${appleDappApple.address}\n`)
 
   // Add liquidity to Aggregator
 
@@ -133,7 +119,32 @@ async function main() {
   transaction = await aggregator.connect(deployer).addLiquidity(amount1, amount1)
   await transaction.wait()
 
- // Add liquidity to APPL / USD on Dapp Swap
+
+  // Add liquidity to DAPP / USD on Dapp Swap
+
+  transaction = await dapp.connect(deployer).approve(amm.address, amount)
+  await transaction.wait()
+
+  transaction = await usd.connect(deployer).approve(amm.address, amount)
+  await transaction.wait()
+
+  console.log(`Adding liquidity...\n`)
+  transaction = await amm.connect(deployer).addLiquidity(amount, amount)
+  await transaction.wait()
+
+  // Add liquidity to DAPP / USD on Apple Swap
+
+  transaction = await dapp.connect(deployer).approve(appleswap.address, amount1)
+  await transaction.wait()
+
+  transaction = await usd.connect(deployer).approve(appleswap.address, amount1)
+  await transaction.wait()
+
+  console.log(`Adding liquidity...\n`)
+  transaction = await appleswap.connect(deployer).addLiquidity(amount1, amount1)
+  await transaction.wait()
+
+   // Add liquidity to APPL / USD on Dapp Swap
 
   transaction = await apple.connect(deployer).approve(dappAppleUSD.address, amount2)
   await transaction.wait()
@@ -156,6 +167,30 @@ async function main() {
    console.log(`Adding liquidity...\n`)
    transaction = await appleAppleUSD.connect(deployer).addLiquidity(amount3, amount3)
    await transaction.wait()
+
+   // Add liquidity to DAPP / APPL on Dapp Swap
+
+   transaction = await dapp.connect(deployer).approve(dappDappApple.address, amount4)
+   await transaction.wait()
+ 
+   transaction = await apple.connect(deployer).approve(dappDappApple.address, amount4)
+   await transaction.wait()
+ 
+   console.log(`Adding liquidity...\n`)
+   transaction = await dappDappApple.connect(deployer).addLiquidity(amount4, amount4)
+   await transaction.wait()
+ 
+    // Add liquidity to DAPP / APPL on Apple Swap
+ 
+    transaction = await dapp.connect(deployer).approve(appleDappApple.address, amount5)
+    await transaction.wait()
+  
+    transaction = await apple.connect(deployer).approve(appleDappApple.address, amount5)
+    await transaction.wait()
+  
+    console.log(`Adding liquidity...\n`)
+    transaction = await appleDappApple.connect(deployer).addLiquidity(amount5, amount5)
+    await transaction.wait()
 
   // Add DEX addresses to mapping list
 

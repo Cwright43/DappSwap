@@ -129,25 +129,6 @@ function App() {
       <HashRouter>
 
         <Navigation />
-    <>
-      <Button
-        onClick={() => setOpen(!open)}
-        aria-controls="example-collapse-text"
-        aria-expanded={open}
-      >
-        DappSwap Liquidity 
-      </Button>
-      <div style={{ minHeight: '100px' }}>
-        <Collapse in={open} dimension="width">
-          <div id="example-collapse-text">
-            <Card body style={{ width: '400px' }}>
-            <h6>DAPP Liquidity: {parseFloat(token1).toFixed(2)}</h6>
-            <h6>USD Liquidity: {parseFloat(token2).toFixed(2)}</h6>
-            </Card>
-          </div>
-        </Collapse>
-      </div>
-    </>
         <hr />
 
         <h5 className='my-4 text-left'>
