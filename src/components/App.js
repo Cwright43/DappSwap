@@ -53,14 +53,25 @@ function App() {
   const [apple, setApple] = useState(null)
 
   const [dappAppleUSD, setDappAppleUSD] = useState(null)
+  const [dappDappApple, setDappDappApple] = useState(null)
+
+  // Load DAI/WETH pool from Mainnet
+
+  const poolDAI = useSelector(state => state.amm.poolDAI)
+  const poolWETH = useSelector(state => state.amm.poolWETH)
+
+  // Load
+
+  const token1 = useSelector(state => state.amm.token1)
+  const token2 = useSelector(state => state.amm.token2)
+
+  // Load 
 
   const [appleBalance, setAppleBalance] = useState(0)
   const [usdBalance2, setUSDBalance2] = useState(0)
 
-  const token1 = useSelector(state => state.amm.token1)
-  const token2 = useSelector(state => state.amm.token2)
-  const poolDAI = useSelector(state => state.amm.poolDAI)
-  const poolWETH = useSelector(state => state.amm.poolWETH)
+  const [dappBalance, setDappBalance] = useState(0)
+  const [appleBalance2, setAppleBalance2] = useState(0)
 
   const dispatch = useDispatch()
 
@@ -101,6 +112,9 @@ function App() {
     const dappAppleUSD = new ethers.Contract(config[1].dappAppleUSD.address, AMM_ABI, provider)
     setDappAppleUSD(dappAppleUSD)
 
+    const dappDappApple = new ethers.Contract(config[1].dappDappApple.address, AMM_ABI, provider)
+    setDappDappApple(dappDappApple)
+
     // Load APPL balance for Dapp Swap
 
     let appleBalance = await apple.balanceOf(dappAppleUSD.address)
@@ -111,12 +125,19 @@ function App() {
     usdBalance2 = ethers.utils.formatUnits(usdBalance2, 18)
     setUSDBalance2(usdBalance2)
 
+
+    let dappBalance = await dapp.balanceOf(dappDappApple.address)
+    dappBalance = ethers.utils.formatUnits(dappBalance, 18)
+    setDappBalance(dappBalance)
+
+    let appleBalance2 = await apple.balanceOf(dappDappApple.address)
+    appleBalance2 = ethers.utils.formatUnits(appleBalance2, 18)
+    setAppleBalance2(appleBalance2)
+
   }
 
   const testHandler = async (e) => {
-
       console.log("Testing...")
-
   }
 
 
@@ -130,7 +151,9 @@ function App() {
 
         <Navigation />
         <hr />
-
+<hr className="hr hr-blurry" />
+    <Row>
+      <Col>
         <h5 className='my-4 text-left'>
         <img
                 alt="dapptoken"
@@ -139,7 +162,7 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid"
                 />
-        Total DAPP in Liquidity: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h5>
+        DAPP in DAPP / USD Liquidity: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h5>
         <h5 className='my-4 text-left'>
         <img
                 alt="usdtoken"
@@ -148,7 +171,49 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid"
                 />
-        Total USD in Liquidity: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h5>
+        USD in DAPP / USD Liquidity: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h5>
+      </Col>
+      <Col>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="appletoken"
+                src={appleIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+        APPL in APPL / USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="usdtoken"
+                src={usdIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+        USD in APPL / USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
+      </Col>
+    </Row>
+<hr className="hr hr-blurry" />
+        <h5 className='my-4 text-left'>
+        <img
+                alt="dapptoken"
+                src={dappIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+        DAPP in DAPP / APPL Liquidity: <strong>{parseFloat(dappBalance).toFixed(2)}</strong></h5>
+        <h5 className='my-4 text-left'>
+        <img
+                alt="appletoken"
+                src={appleIcon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+        APPL in DAPP / APPL Liquidity: <strong>{parseFloat(appleBalance2).toFixed(2)}</strong></h5>
+<hr className="hr hr-blurry" />
         <h5 className='my-4 text-left'>
         <img
                 alt="daitoken"
@@ -168,24 +233,8 @@ function App() {
                 />
           Total WETH in Uniswap: <strong>{parseFloat(poolWETH).toFixed(2)}</strong> tokens</h5>
         <h5 className='my-4 text-left'>DAI/WETH Rate: <strong>{parseFloat(poolDAI / poolWETH).toFixed(2)}</strong></h5>
-        <h5 className='my-4 text-left'>
-        <img
-                alt="appletoken"
-                src={appleIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-        APPL in APPL/USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
-        <h5 className='my-4 text-left'>
-        <img
-                alt="usdtoken"
-                src={usdIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-        USD in APPL/USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
+  <hr className="hr hr-blurry" />
+
 
               <p>
                 <Button 
@@ -205,6 +254,7 @@ function App() {
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
         </Routes>
+        
 
       </HashRouter>
     </Container>

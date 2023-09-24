@@ -62,7 +62,7 @@ export const loadAccount = async (dispatch) => {
 }
 
 // ------------------------------------------------------------------------------
-// LOAD CONTRACTS
+// Load DAPP / USD Token Pair
 export const loadTokens = async (provider, chainId, dispatch) => {
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
@@ -72,6 +72,30 @@ export const loadTokens = async (provider, chainId, dispatch) => {
   dispatch(setContracts([dapp, usd]))
   dispatch(setSymbols([await dapp.symbol(), await usd.symbol()]))
 }
+
+// Load APPL / USD Token Pair
+export const loadAppleUSD = async (provider, chainId, dispatch) => {
+  const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
+  const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
+
+  // Change contract values as neeeded here
+
+  dispatch(setContracts([dapp, usd]))
+  dispatch(setSymbols([await dapp.symbol(), await usd.symbol()]))
+}
+
+// Load DAPP / APPL Token Pair
+export const loadDAppApple = async (provider, chainId, dispatch) => {
+  const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
+  const apple = new ethers.Contract(config[chainId].apple.address, TOKEN_ABI, provider)
+
+  // Change contract values as neeeded here
+
+  dispatch(setContracts([dapp, apple]))
+  dispatch(setSymbols([await dapp.symbol(), await apple.symbol()]))
+}
+
+
 
 export const loadAMM = async (provider, chainId, dispatch) => {
   const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
@@ -99,7 +123,7 @@ export const loadAppleswap = async (provider, chainId, dispatch) => {
 
 // ------------------------------------------------------------------------------
 // LOAD BALANCES & SHARES
-export const loadBalances = async (amm, tokens, account, dispatch) => {
+export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const balance1 = await tokens[0].balanceOf(account)
   const balance2 = await tokens[1].balanceOf(account)
 
@@ -111,43 +135,54 @@ export const loadBalances = async (amm, tokens, account, dispatch) => {
   const shares = 100 // await amm.shares(account)
   dispatch(sharesLoaded(ethers.utils.formatUnits(shares.toString(), 'ether')))
 
-  const token1 = await amm.token1Balance()
+  const token1 = await _amm.token1Balance()
   dispatch(token1Loaded(ethers.utils.formatUnits(token1.toString(), 'ether')))
 
-  const token2 = await amm.token2Balance()
+  const token2 = await _amm.token2Balance()
   dispatch(token2Loaded(ethers.utils.formatUnits(token2.toString(), 'ether')))
 
-  const poolDAI = await amm.poolDAIbalance()
+  const poolDAI = await _amm.poolDAIbalance()
   dispatch(poolDAILoaded(ethers.utils.formatUnits(poolDAI.toString(), 'ether')))
 
-  const poolWETH = await amm.poolWETHbalance()
+  const poolWETH = await _amm.poolWETHbalance()
   dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
 }
 
-export const loadDappAppleUSDBalances = async (dappAppleUSD, tokens, account, dispatch) => {
+export const loadToken3and4 = async (_amm, tokens, account, dispatch) => {
 
-  const token5 = await dappAppleUSD.token1Balance()
-  dispatch(token5Loaded(ethers.utils.formatUnits(token5.toString(), 'ether')))
+  const balance3 = await tokens[0].balanceOf(account)
+  const balance4 = await tokens[1].balanceOf(account)
 
-  const token6 = await dappAppleUSD.token2Balance()
-  dispatch(token6Loaded(ethers.utils.formatUnits(token6.toString(), 'ether')))
+  dispatch(balancesLoaded([
+    ethers.utils.formatUnits(balance3.toString(), 'ether'),
+    ethers.utils.formatUnits(balance4.toString(), 'ether')
+  ]))
 
-
-}
-
-
-
-
-export const loadBalances1 = async (appleswap, tokens, account, dispatch) => {
-
-  const token3 = await appleswap.token1Balance()
+  const token3 = await _amm.token1Balance()
   dispatch(token3Loaded(ethers.utils.formatUnits(token3.toString(), 'ether')))
 
-  const token4 = await appleswap.token2Balance()
+  const token4 = await _amm.token2Balance()
   dispatch(token4Loaded(ethers.utils.formatUnits(token4.toString(), 'ether')))
 
 }
 
+export const loadToken5and6 = async (_amm, tokens, account, dispatch) => {
+
+  const balance5 = await tokens[0].balanceOf(account)
+  const balance6 = await tokens[1].balanceOf(account)
+
+  dispatch(balancesLoaded([
+    ethers.utils.formatUnits(balance5.toString(), 'ether'),
+    ethers.utils.formatUnits(balance6.toString(), 'ether')
+  ]))
+
+  const token5 = await _amm.token1Balance()
+  dispatch(token5Loaded(ethers.utils.formatUnits(token5.toString(), 'ether')))
+
+  const token6 = await _amm.token2Balance()
+  dispatch(token6Loaded(ethers.utils.formatUnits(token6.toString(), 'ether')))
+
+}
 
 
 
