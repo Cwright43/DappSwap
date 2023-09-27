@@ -26,6 +26,9 @@ export const amm = createSlice({
     setContract: (state, action) => {
       state.contract = action.payload
     },
+    setContract1: (state, action) => {
+      state.contract = action.payload
+    },
     sharesLoaded: (state, action) => {
       state.shares = action.payload
     },
@@ -115,6 +118,7 @@ export const amm = createSlice({
 
 export const {
   setContract,
+  setContract1,
   sharesLoaded,
   token1Loaded,
   token2Loaded,

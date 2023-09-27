@@ -149,11 +149,11 @@ async function main() {
   transaction = await apple.connect(deployer).approve(dappAppleUSD.address, amount2)
   await transaction.wait()
 
-  transaction = await usd.connect(deployer).approve(dappAppleUSD.address, amount2)
+  transaction = await usd.connect(deployer).approve(dappAppleUSD.address, amount5)
   await transaction.wait()
 
   console.log(`Adding liquidity...\n`)
-  transaction = await dappAppleUSD.connect(deployer).addLiquidity(amount2, amount2)
+  transaction = await dappAppleUSD.connect(deployer).addLiquidity(amount2, amount5)
   await transaction.wait()
 
    // Add liquidity to APPL / USD on Apple Swap

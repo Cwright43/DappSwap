@@ -38,44 +38,60 @@ import {
   loadNetwork,
   loadAccount,
   loadTokens,
-  loadAMM
+  loadAppleUSD,
+  loadAMM,
+  loadDappAppleUSD
 } from '../store/interactions'
 
 function App() {
 
   const [tokenBalance, setTokenBalance] = useState(0)
 
-  const [open, setOpen] = useState(false);
-  const [open1, setOpen1] = useState(false);
-
+  // Set Token Addresses
   const [usd, setUSD] = useState(null)
   const [dapp, setDapp] = useState(null)
   const [apple, setApple] = useState(null)
 
-  const [dappAppleUSD, setDappAppleUSD] = useState(null)
-  const [dappDappApple, setDappDappApple] = useState(null)
+  const [rate1, setRate1] = useState(null)
+  const [rate2, setRate2] = useState(null)
+  const [rate3, setRate3] = useState(null)
 
-  // Load DAI/WETH pool from Mainnet
 
-  const poolDAI = useSelector(state => state.amm.poolDAI)
-  const poolWETH = useSelector(state => state.amm.poolWETH)
+    // Set Address for DAPP / USD Pool
+    const [amm, setAMM] = useState(null)
 
-  // Load
+    // Set Address for APPL / USD Pool
+    const [dappAppleUSD, setDappAppleUSD] = useState(null)
+    
+    // Set Address for DAPP / APPL Pool
+    const [dappDappApple, setDappDappApple] = useState(null)
 
-  const token1 = useSelector(state => state.amm.token1)
-  const token2 = useSelector(state => state.amm.token2)
+    // Load DAI/WETH Balances from Mainnet
+    const poolDAI = useSelector(state => state.amm.poolDAI)
+    const poolWETH = useSelector(state => state.amm.poolWETH)
 
-  // Load 
+    // Call balances for DAPP / USD
+    const token1 = useSelector(state => state.amm.token1)
+    const token2 = useSelector(state => state.amm.token2)
 
-  const [appleBalance, setAppleBalance] = useState(0)
-  const [usdBalance2, setUSDBalance2] = useState(0)
+    // Set Balances for DAPP / USD
+    const [balance1, setBalance1] = useState(0)
+    const [balance2, setBalance2] = useState(0)
 
-  const [dappBalance, setDappBalance] = useState(0)
-  const [appleBalance2, setAppleBalance2] = useState(0)
+    // Set Balances for APPL / USD
+    const [appleBalance, setAppleBalance] = useState(0)
+    const [usdBalance, setUSDBalance] = useState(0)
 
-  const dispatch = useDispatch()
+    // Set Balances for DAPP / APPL
+    const [dappBalance, setDappBalance] = useState(0)
+    const [appleBalance2, setAppleBalance2] = useState(0)
 
-  const loadBlockchainData = async () => {
+    // Set Chain ID for Network
+    const chainId = useSelector(state => state.provider.chainId)
+
+    const dispatch = useDispatch()
+
+const loadBlockchainData = async () => {
 
     // Initiate provider
     const provider = await loadProvider(dispatch)
@@ -107,33 +123,50 @@ function App() {
     let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
     setApple(apple)
 
-    // Load Dapp APPL / USD trading pair
+    // Load Dapp DAPP / USD Pool Address
+      const amm = new ethers.Contract(config[1].amm.address, AMM_ABI, provider)
+      setAMM(amm)
 
-    const dappAppleUSD = new ethers.Contract(config[1].dappAppleUSD.address, AMM_ABI, provider)
-    setDappAppleUSD(dappAppleUSD)
+    // Load Dapp APPL / USD Pool Address
+      const dappAppleUSD = new ethers.Contract(config[1].dappAppleUSD.address, AMM_ABI, provider)
+      setDappAppleUSD(dappAppleUSD)
 
-    const dappDappApple = new ethers.Contract(config[1].dappDappApple.address, AMM_ABI, provider)
-    setDappDappApple(dappDappApple)
+    // Load Dapp DAPP / APPL Pool Address
+      const dappDappApple = new ethers.Contract(config[1].dappDappApple.address, AMM_ABI, provider)
+      setDappDappApple(dappDappApple)
+      
+    // --------
 
-    // Load APPL balance for Dapp Swap
+    // Load Balances for DAPP / USD
+    let balance1 = await dapp.balanceOf(amm.address)
+    balance1 = ethers.utils.formatUnits(balance1, 18)
+    setBalance1(balance1)
 
-    let appleBalance = await apple.balanceOf(dappAppleUSD.address)
-    appleBalance = ethers.utils.formatUnits(appleBalance, 18)
-    setAppleBalance(appleBalance)
+    let balance2 = await usd.balanceOf(amm.address)
+    balance2 = ethers.utils.formatUnits(balance2, 18)
+    setBalance2(balance2)
 
-    let usdBalance2 = await usd.balanceOf(dappAppleUSD.address)
-    usdBalance2 = ethers.utils.formatUnits(usdBalance2, 18)
-    setUSDBalance2(usdBalance2)
+    // Load Balances for APPL / USD
+      let appleBalance = await apple.balanceOf(dappAppleUSD.address)
+      appleBalance = ethers.utils.formatUnits(appleBalance, 18)
+      setAppleBalance(appleBalance)
 
+      let usdBalance = await usd.balanceOf(dappAppleUSD.address)
+      usdBalance = ethers.utils.formatUnits(usdBalance, 18)
+      setUSDBalance(usdBalance)
 
-    let dappBalance = await dapp.balanceOf(dappDappApple.address)
-    dappBalance = ethers.utils.formatUnits(dappBalance, 18)
-    setDappBalance(dappBalance)
+    // Load Balances for DAPP / APPL
+      let dappBalance = await dapp.balanceOf(dappDappApple.address)
+      dappBalance = ethers.utils.formatUnits(dappBalance, 18)
+      setDappBalance(dappBalance)
 
-    let appleBalance2 = await apple.balanceOf(dappDappApple.address)
-    appleBalance2 = ethers.utils.formatUnits(appleBalance2, 18)
-    setAppleBalance2(appleBalance2)
+      let appleBalance2 = await apple.balanceOf(dappDappApple.address)
+      appleBalance2 = ethers.utils.formatUnits(appleBalance2, 18)
+      setAppleBalance2(appleBalance2)
 
+      setRate1((balance2 / balance1))
+      setRate2((usdBalance / appleBalance))
+      setRate3((appleBalance2 / dappBalance))
   }
 
   const testHandler = async (e) => {
@@ -162,7 +195,7 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid"
                 />
-        DAPP in DAPP / USD Liquidity: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h5>
+        DAPP in DAPP / USD Liquidity: <strong>{parseFloat(balance1).toFixed(2)}</strong> tokens</h5>
         <h5 className='my-4 text-left'>
         <img
                 alt="usdtoken"
@@ -171,7 +204,8 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid"
                 />
-        USD in DAPP / USD Liquidity: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h5>
+        USD in DAPP / USD Liquidity: <strong>{parseFloat(balance2).toFixed(2)}</strong> tokens</h5>
+        <h5> Exchange Rate: {parseFloat(rate1).toFixed(2)}</h5>
       </Col>
       <Col>
         <h5 className='my-4 text-left'>
@@ -191,7 +225,8 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid"
                 />
-        USD in APPL / USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
+        USD in APPL / USD Liquidity: <strong>{parseFloat(usdBalance).toFixed(2)}</strong></h5>
+        <h5> Exchange Rate: {parseFloat(rate2).toFixed(2)}</h5>
       </Col>
     </Row>
 <hr className="hr hr-blurry" />
@@ -213,6 +248,7 @@ function App() {
                 className="align-right mx-3 img-fluid"
                 />
         APPL in DAPP / APPL Liquidity: <strong>{parseFloat(appleBalance2).toFixed(2)}</strong></h5>
+        <h5> Exchange Rate: {parseFloat(rate3).toFixed(2)}</h5>
 <hr className="hr hr-blurry" />
         <h5 className='my-4 text-left'>
         <img
@@ -242,7 +278,7 @@ function App() {
                   style={{ width: '20%' }}
                   onClick={() => testHandler()}
                   >
-                  Test Button
+                  Test Button 
                 </Button>
               </p>
 
@@ -258,6 +294,7 @@ function App() {
 
       </HashRouter>
     </Container>
+
   )
 }
 

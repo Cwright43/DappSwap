@@ -26,34 +26,34 @@
 
   "1": {
     "dapp": {
-      "address": "0xC0340c0831Aa40A0791cF8C3Ab4287EB0a9705d8"
+      "address": "0x38c76A767d45Fc390160449948aF80569E2C4217"
     },
     "usd": {
-      "address": "0xFf658343244c0475b9305859F1b7CDAB9784762f"
+      "address": "0xDC57724Ea354ec925BaFfCA0cCf8A1248a8E5CF1"
     },
     "apple": {
-      "address": "0x1c1521cf734CD13B02e8150951c3bF2B438be780"
+      "address": "0xfc073209b7936A771F77F63D42019a3a93311869"
     },
     "amm": {
-      "address": "0x4432a6DcfAEAB227673B43C30c6fEf40eaBD5D30"
+      "address": "0xb4e9A5BC64DC07f890367F72941403EEd7faDCbB"
     },
     "appleswap": {
-      "address": "0x0B1a87021ec75fBaE919b1e86b2B1335FFC8F4d3"
+      "address": "0xa8d297D643a11cE83b432e87eEBce6bee0fd2bAb"
     },
     "aggregator": {
-      "address": "0x18eb8AF587dcd7E4F575040F6D800a6B5Cef6CAf"
+      "address": "0x6Da3D07a6BF01F02fB41c02984a49B5d9Aa6ea92"
     },
     "dappAppleUSD": {
-      "address": "0xA4aE77554847958aC0854f06601267c9F9C75dfD"
+      "address": "0x68d2Ecd85bDEbfFd075Fb6D87fFD829AD025DD5C"
     },
     "appleAppleUSD": {
-      "address": "0x7c02b58029beeA7c1FcC872803dC9818f57A0E61"
+      "address": "0x9D3999af03458c11C78F7e6C0fAE712b455D4e33"
     },
     "dappDappApple": {
-      "address": "0x3818eAb6Ca8Bf427222bfACFA706c514145F4104"
+      "address": "0xc4Fe39a1588807CfF8d8897050c39F065eBAb0B8"
     },
     "appleDappApple": {
-      "address": "0x4A351C6aE3249499CBb50E8FE6566E2615386Da8"
+      "address": "0x8731d45ff9684d380302573cCFafd994Dfa7f7d3"
     }
     
   }

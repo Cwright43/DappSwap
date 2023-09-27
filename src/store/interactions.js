@@ -7,20 +7,25 @@ import {
 } from './reducers/provider'
 
 import {
-  setContracts,
-  setSymbols,
-  balancesLoaded
+  setContracts, 
+  setSymbols, 
+  balancesLoaded,
+  setContracts1, 
+  setSymbols1, 
+  balancesLoaded1,
+  setContracts2, 
+  setSymbols2, 
+  balancesLoaded2
 } from './reducers/tokens'
 
 import {
   setContract,
+  setContract1,
   sharesLoaded,
   token1Loaded,
   token2Loaded,
   token3Loaded,
   token4Loaded,
-  token5Loaded,
-  token6Loaded,
   poolDAILoaded,
   poolWETHLoaded,
   swapsLoaded,
@@ -75,13 +80,13 @@ export const loadTokens = async (provider, chainId, dispatch) => {
 
 // Load APPL / USD Token Pair
 export const loadAppleUSD = async (provider, chainId, dispatch) => {
-  const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
+  const apple = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
 
   // Change contract values as neeeded here
 
-  dispatch(setContracts([dapp, usd]))
-  dispatch(setSymbols([await dapp.symbol(), await usd.symbol()]))
+  dispatch(setContracts([apple, usd]))
+  dispatch(setSymbols([await apple.symbol(), await usd.symbol()]))
 }
 
 // Load DAPP / APPL Token Pair
@@ -95,8 +100,10 @@ export const loadDAppApple = async (provider, chainId, dispatch) => {
   dispatch(setSymbols([await dapp.symbol(), await apple.symbol()]))
 }
 
+  // ------------------------------------------
+  // Load Addresses for Liquidity Pools
 
-
+  // Load (DAPP / USD) Address
 export const loadAMM = async (provider, chainId, dispatch) => {
   const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
 
@@ -104,13 +111,25 @@ export const loadAMM = async (provider, chainId, dispatch) => {
 
   return amm
 }
+  // Load (APPL / USD) Address
+  export const loadDappAppleUSD = async (provider, chainId, dispatch) => {
 
-export const loadDappAppleUSD = async (provider, chainId, dispatch) => {
-  const dappAppleUSD = new ethers.Contract(config[chainId].dappAppleUSD.address, AMM_ABI, provider)
+    const amm = new ethers.Contract(config[chainId].dappAppleUSD.address, AMM_ABI, provider)
+  
+    dispatch(setContract(amm))
+  
+    return amm
+  
+  }
+  // Load (DAPP / APPL) Address
+export const loadDappDappApple = async (provider, chainId, dispatch) => {
 
-  dispatch(setContract(dappAppleUSD))
+  const amm = new ethers.Contract(config[chainId].dappDappApple.address, AMM_ABI, provider)
 
-  return dappAppleUSD
+  dispatch(setContract(amm))
+
+  return amm
+
 }
 
 export const loadAppleswap = async (provider, chainId, dispatch) => {
@@ -153,7 +172,7 @@ export const loadToken3and4 = async (_amm, tokens, account, dispatch) => {
   const balance3 = await tokens[0].balanceOf(account)
   const balance4 = await tokens[1].balanceOf(account)
 
-  dispatch(balancesLoaded([
+  dispatch(balancesLoaded1([
     ethers.utils.formatUnits(balance3.toString(), 'ether'),
     ethers.utils.formatUnits(balance4.toString(), 'ether')
   ]))
@@ -165,26 +184,6 @@ export const loadToken3and4 = async (_amm, tokens, account, dispatch) => {
   dispatch(token4Loaded(ethers.utils.formatUnits(token4.toString(), 'ether')))
 
 }
-
-export const loadToken5and6 = async (_amm, tokens, account, dispatch) => {
-
-  const balance5 = await tokens[0].balanceOf(account)
-  const balance6 = await tokens[1].balanceOf(account)
-
-  dispatch(balancesLoaded([
-    ethers.utils.formatUnits(balance5.toString(), 'ether'),
-    ethers.utils.formatUnits(balance6.toString(), 'ether')
-  ]))
-
-  const token5 = await _amm.token1Balance()
-  dispatch(token5Loaded(ethers.utils.formatUnits(token5.toString(), 'ether')))
-
-  const token6 = await _amm.token2Balance()
-  dispatch(token6Loaded(ethers.utils.formatUnits(token6.toString(), 'ether')))
-
-}
-
-
 
 // ------------------------------------------------------------------------------
 // ADD LIQUDITY
@@ -273,11 +272,4 @@ export const loadAllSwaps = async (provider, amm, dispatch) => {
   })
 
   dispatch(swapsLoaded(swaps))
-}
-
-// ------------------------------------------------------------------------------
-// FETCH AMM BALANCES
-
-export const fetchBalance1 = async (provider, amm, dispatch) => {
-
 }
