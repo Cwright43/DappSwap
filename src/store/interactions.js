@@ -10,17 +10,10 @@ import {
   setContracts, 
   setSymbols, 
   balancesLoaded,
-  setContracts1, 
-  setSymbols1, 
-  balancesLoaded1,
-  setContracts2, 
-  setSymbols2, 
-  balancesLoaded2
 } from './reducers/tokens'
 
 import {
   setContract,
-  setContract1,
   sharesLoaded,
   token1Loaded,
   token2Loaded,
@@ -245,11 +238,4 @@ export const loadAllSwaps = async (provider, amm, dispatch) => {
   })
 
   dispatch(swapsLoaded(swaps))
-}
-
-// ------------------------------------------------------------------------------
-// FETCH AMM BALANCES
-
-export const fetchBalance1 = async (provider, amm, dispatch) => {
-
 }
