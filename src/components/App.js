@@ -52,6 +52,7 @@ function App() {
   const [dapp, setDapp] = useState(null)
   const [apple, setApple] = useState(null)
 
+  // Set rate values for each trading pair
   const [rate1, setRate1] = useState(null)
   const [rate2, setRate2] = useState(null)
   const [rate3, setRate3] = useState(null)

@@ -24,8 +24,6 @@ import {
   sharesLoaded,
   token1Loaded,
   token2Loaded,
-  token3Loaded,
-  token4Loaded,
   poolDAILoaded,
   poolWETHLoaded,
   swapsLoaded,
@@ -80,7 +78,7 @@ export const loadTokens = async (provider, chainId, dispatch) => {
 
 // Load APPL / USD Token Pair
 export const loadAppleUSD = async (provider, chainId, dispatch) => {
-  const apple = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
+  const apple = new ethers.Contract(config[chainId].apple.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
 
   // Change contract values as neeeded here
@@ -132,14 +130,6 @@ export const loadDappDappApple = async (provider, chainId, dispatch) => {
 
 }
 
-export const loadAppleswap = async (provider, chainId, dispatch) => {
-  const appleswap = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
-
-  dispatch(setContract(appleswap))
-
-  return appleswap
-}
-
 // ------------------------------------------------------------------------------
 // LOAD BALANCES & SHARES
 export const loadBalances = async (_amm, tokens, account, dispatch) => {
@@ -167,23 +157,6 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
   dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
 }
 
-export const loadToken3and4 = async (_amm, tokens, account, dispatch) => {
-
-  const balance3 = await tokens[0].balanceOf(account)
-  const balance4 = await tokens[1].balanceOf(account)
-
-  dispatch(balancesLoaded1([
-    ethers.utils.formatUnits(balance3.toString(), 'ether'),
-    ethers.utils.formatUnits(balance4.toString(), 'ether')
-  ]))
-
-  const token3 = await _amm.token1Balance()
-  dispatch(token3Loaded(ethers.utils.formatUnits(token3.toString(), 'ether')))
-
-  const token4 = await _amm.token2Balance()
-  dispatch(token4Loaded(ethers.utils.formatUnits(token4.toString(), 'ether')))
-
-}
 
 // ------------------------------------------------------------------------------
 // ADD LIQUDITY
@@ -230,7 +203,7 @@ export const removeLiquidity = async (provider, amm, shares, dispatch) => {
 // ------------------------------------------------------------------------------
 // SWAP
 
-export const swap = async (provider, amm, token, symbol, amount, dispatch) => {
+export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amount, dispatch) => {
   try {
 
     dispatch(swapRequest())
@@ -242,15 +215,15 @@ export const swap = async (provider, amm, token, symbol, amount, dispatch) => {
     transaction = await token.connect(signer).approve(amm.address, amount)
     await transaction.wait()
 
-    if (symbol === "DAPP") {
+    if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await amm.connect(signer).swapToken1(amount)
-    } else {
+    } else { 
       transaction = await amm.connect(signer).swapToken2(amount)
     }
 
     await transaction.wait()
 
-    // Tell redux that the swap has finished - MISSION COMPLETE
+    // Tell redux that the swap has finished
 
     dispatch(swapSuccess(transaction.hash))
 
@@ -272,4 +245,11 @@ export const loadAllSwaps = async (provider, amm, dispatch) => {
   })
 
   dispatch(swapsLoaded(swaps))
+}
+
+// ------------------------------------------------------------------------------
+// FETCH AMM BALANCES
+
+export const fetchBalance1 = async (provider, amm, dispatch) => {
+
 }

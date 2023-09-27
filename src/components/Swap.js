@@ -14,6 +14,7 @@ import Alert from './Alert'
 
 import {
   swap,
+  swapDappApple,
   loadProvider,
   loadNetwork,
   loadAccount,
@@ -40,6 +41,9 @@ const Swap = () => {
   const provider = useSelector(state => state.provider.connection)
   const account = useSelector(state => state.provider.account)
 
+
+  // Set Chain ID for Network
+  const chainId = useSelector(state => state.provider.chainId)
   const tokens = useSelector(state => state.tokens.contracts)
   const symbols = useSelector(state => state.tokens.symbols)
   const balances = useSelector(state => state.tokens.balances)
@@ -60,6 +64,7 @@ const Swap = () => {
     console.log(`Token 1 Account Balance: ${parseFloat(balances[0]).toFixed(2)}`)
     console.log(`Token 2 Account Balance: ${parseFloat(balances[1]).toFixed(2)}`)
     console.log(`Active AMM Address: ${amm.address}`)
+    console.log(`Active Symbol (1): ${symbols}`)
 }
 
   const inputHandler = async (e) => {
@@ -77,8 +82,8 @@ const Swap = () => {
     // Handle for (1) - DAPP / USD Pair
     if ((inputToken === 'DAPP' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'DAPP')) {
       console.log(`DAPP / USD Activated`)
-      console.log(`${await amm.token1Balance()} & ${await amm.token2Balance()}`)
       await loadBalances(amm, tokens, account, dispatch)
+      console.log(`${await amm.token1Balance()} & ${await amm.token2Balance()}`)
         if (inputToken === 'DAPP') {
           setInputAmount(e.target.value)
           const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
@@ -97,8 +102,8 @@ const Swap = () => {
     // Handle for (2) - APPL / USD Pair
     if ((inputToken === 'APPL' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'APPL')) {
       console.log(`APPL / USD Activated`)
-      console.log(`${await amm.token1Balance()} & ${await amm.token2Balance()}`)
       await loadBalances(amm, tokens, account, dispatch)
+      console.log(`${await amm.token1Balance()} & ${await amm.token2Balance()}`)
         if (inputToken === 'APPL') {
           setInputAmount(e.target.value)
           const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
@@ -117,8 +122,8 @@ const Swap = () => {
     // Handle for (3) - DAPPL / APPL Pair
     if ((inputToken === 'DAPP' && outputToken === 'APPL') || (inputToken === 'APPL' && outputToken === 'DAPP')) {
       console.log(`DAPP / APPL Activated`)
-      console.log(`${await amm.token1Balance()} & ${await amm.token2Balance()}`)
       await loadBalances(amm, tokens, account, dispatch)
+      console.log(`${await amm.token1Balance()} & ${await amm.token2Balance()}`)
         if (inputToken === 'DAPP') {
           setInputAmount(e.target.value)
           const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
@@ -133,9 +138,7 @@ const Swap = () => {
           setOutputAmount(_token1Amount.toString())
           }
         }
-  
         console.log(`${amm.address}`)
-
   }
 
   const swapHandler = async (e) => {
@@ -149,14 +152,14 @@ const Swap = () => {
     }
 
     const _inputAmount = ethers.utils.parseUnits(inputAmount, 'ether')
-
+    await loadTokens(provider, chainId, dispatch);
     // Swap token depending upon which one we're doing...
     if ((inputToken === 'DAPP' && outputToken === 'USD') 
       || (inputToken === 'APPL' && outputToken === 'USD') 
         || (inputToken === 'DAPP' && outputToken === 'APPL')) {
-      await swap(provider, amm, tokens[0], inputToken, _inputAmount, dispatch)
+      await swap(provider, amm, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
     } else {
-      await swap(provider, amm, tokens[1], inputToken, _inputAmount, dispatch)
+      await swap(provider, amm, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
     }
 
     await loadBalances(amm, tokens, account, dispatch)
