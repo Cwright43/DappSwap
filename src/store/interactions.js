@@ -63,8 +63,6 @@ export const loadTokens = async (provider, chainId, dispatch) => {
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
 
-  // Change contract values as neeeded here
-
   dispatch(setContracts([dapp, usd]))
   dispatch(setSymbols([await dapp.symbol(), await usd.symbol()]))
 }
@@ -74,8 +72,6 @@ export const loadAppleUSD = async (provider, chainId, dispatch) => {
   const apple = new ethers.Contract(config[chainId].apple.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
 
-  // Change contract values as neeeded here
-
   dispatch(setContracts([apple, usd]))
   dispatch(setSymbols([await apple.symbol(), await usd.symbol()]))
 }
@@ -84,8 +80,6 @@ export const loadAppleUSD = async (provider, chainId, dispatch) => {
 export const loadDAppApple = async (provider, chainId, dispatch) => {
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const apple = new ethers.Contract(config[chainId].apple.address, TOKEN_ABI, provider)
-
-  // Change contract values as neeeded here
 
   dispatch(setContracts([dapp, apple]))
   dispatch(setSymbols([await dapp.symbol(), await apple.symbol()]))

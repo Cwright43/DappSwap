@@ -14,10 +14,7 @@ import Alert from './Alert'
 
 import {
   swap,
-  swapDappApple,
-  loadProvider,
   loadNetwork,
-  loadAccount,
   loadTokens,
   loadAMM,
   loadBalances,
@@ -41,7 +38,6 @@ const Swap = () => {
   const provider = useSelector(state => state.provider.connection)
   const account = useSelector(state => state.provider.account)
 
-
   // Set Chain ID for Network
   const chainId = useSelector(state => state.provider.chainId)
   const tokens = useSelector(state => state.tokens.contracts)
@@ -53,12 +49,10 @@ const Swap = () => {
   const isSuccess = useSelector(state => state.amm.swapping.isSuccess)
   const transactionHash = useSelector(state => state.amm.swapping.transactionHash)
 
-  const dispatch = useDispatch()
-
-  // Call balances for DAPP / USD
-
   const token1 = useSelector(state => state.amm.token1)
   const token2 = useSelector(state => state.amm.token2)
+
+  const dispatch = useDispatch()
 
   const testHandler = async (e) => {
     console.log(`Token 1 Account Balance: ${parseFloat(balances[0]).toFixed(2)}`)
@@ -77,7 +71,6 @@ const Swap = () => {
       window.alert('Invalid token pair')
       return
     }
-
 
     // Handle for (1) - DAPP / USD Pair
     if ((inputToken === 'DAPP' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'DAPP')) {
@@ -143,7 +136,6 @@ const Swap = () => {
 
   const swapHandler = async (e) => {
     e.preventDefault()
-
     setShowAlert(false)
 
     if (inputToken === outputToken) {
@@ -153,6 +145,7 @@ const Swap = () => {
 
     const _inputAmount = ethers.utils.parseUnits(inputAmount, 'ether')
     await loadTokens(provider, chainId, dispatch);
+  
     // Swap token depending upon which one we're doing...
     if ((inputToken === 'DAPP' && outputToken === 'USD') 
       || (inputToken === 'APPL' && outputToken === 'USD') 
@@ -166,7 +159,6 @@ const Swap = () => {
     await getPrice()
 
     setShowAlert(true)
-
   }
 
   const getPrice = async () => {

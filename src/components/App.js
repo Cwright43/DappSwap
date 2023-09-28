@@ -13,9 +13,6 @@ import Withdraw from './Withdraw';
 import Charts from './Charts';
 
 import Button from 'react-bootstrap/Button' 
-import Card from 'react-bootstrap/Card' 
-import Collapse from 'react-bootstrap/Collapse' 
-import ListGroup from 'react-bootstrap/ListGroup'
 
 import wethIcon from '../WETH.png';
 import daiIcon from '../DAI.png';
@@ -38,14 +35,10 @@ import {
   loadNetwork,
   loadAccount,
   loadTokens,
-  loadAppleUSD,
   loadAMM,
-  loadDappAppleUSD
 } from '../store/interactions'
 
 function App() {
-
-  const [tokenBalance, setTokenBalance] = useState(0)
 
   // Set Token Addresses
   const [usd, setUSD] = useState(null)
@@ -56,7 +49,6 @@ function App() {
   const [rate1, setRate1] = useState(null)
   const [rate2, setRate2] = useState(null)
   const [rate3, setRate3] = useState(null)
-
 
     // Set Address for DAPP / USD Pool
     const [amm, setAMM] = useState(null)
@@ -272,7 +264,6 @@ const loadBlockchainData = async () => {
         <h5 className='my-4 text-left'>DAI/WETH Rate: <strong>{parseFloat(poolDAI / poolWETH).toFixed(2)}</strong></h5>
   <hr className="hr hr-blurry" />
 
-
               <p>
                 <Button 
                   variant="primary" 
@@ -292,7 +283,6 @@ const loadBlockchainData = async () => {
           <Route path="/charts" element={<Charts />} />
         </Routes>
         
-
       </HashRouter>
     </Container>
 
