@@ -12,12 +12,20 @@ import { ethers } from 'ethers'
 
 import Alert from './Alert'
 
+// ABIs: Import your contract ABIs here
+import AMM_ABI from '../abis/AMM.json'
+import TOKEN_ABI from '../abis/Token.json'
+
+// Config: Import your network config here
+import config from '../config.json';
+
 import {
   swap,
   loadNetwork,
   loadTokens,
   loadAMM,
   loadBalances,
+  loadAppleBalance,
   loadAppleUSD,
   loadDAppApple,
   loadDappAppleUSD,
@@ -25,7 +33,7 @@ import {
 
 } from '../store/interactions'
 
-const Swap = () => {
+const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) => {
   const [inputToken, setInputToken] = useState(null)
   const [outputToken, setOutputToken] = useState(null)
   const [inputAmount, setInputAmount] = useState(0)
@@ -48,6 +56,7 @@ const Swap = () => {
   const isSwapping = useSelector(state => state.amm.swapping.isSwapping)
   const isSuccess = useSelector(state => state.amm.swapping.isSuccess)
   const transactionHash = useSelector(state => state.amm.swapping.transactionHash)
+  const appleBalance = useSelector(state => state.amm.provider)
 
   const token1 = useSelector(state => state.amm.token1)
   const token2 = useSelector(state => state.amm.token2)
@@ -172,7 +181,6 @@ const Swap = () => {
       return
     }
 
-      console.log(`TEST START`)
     // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
     const chainId = await loadNetwork(provider, dispatch)
   
@@ -212,8 +220,6 @@ const Swap = () => {
             console.log(`${price}`)
           }
 
-    console.log(`TEST END`)
-
   }
     
   useEffect(() => {
@@ -233,11 +239,13 @@ const Swap = () => {
                 <Form.Label><strong>Input:</strong></Form.Label>
                 <Form.Text muted>
                   Balance: {
-                    inputToken === symbols[0] ? (
-                      parseFloat(balances[0]).toFixed(2)
-                    ) : inputToken === symbols[1] ? (
-                      parseFloat(balances[1]).toFixed(2)
-                    ) : 0
+                  inputToken === 'DAPP' ? (
+                    parseFloat(dappAccountBalance).toFixed(2)
+                  ) : inputToken === 'USD' ? (
+                    parseFloat(usdAccountBalance).toFixed(2)
+                  ) : inputToken === 'APPL' ? (
+                    parseFloat(appleAccountBalance).toFixed(2)
+                  ) : 0
                   }
                 </Form.Text>
               </div>
@@ -267,10 +275,12 @@ const Swap = () => {
                 <Form.Label><strong>Output:</strong></Form.Label>
                 <Form.Text muted>
                   Balance: {
-                    outputToken === symbols[0] ? (
-                      parseFloat(balances[0]).toFixed(2)
-                    ) : outputToken === symbols[1] ? (
-                      parseFloat(balances[1]).toFixed(2)
+                    outputToken === 'DAPP' ? (
+                      parseFloat(dappAccountBalance).toFixed(2)
+                    ) : outputToken === 'USD' ? (
+                      parseFloat(usdAccountBalance).toFixed(2)
+                    ) : outputToken === 'APPL' ? (
+                      parseFloat(appleAccountBalance).toFixed(2)
                     ) : 0
                   }
                 </Form.Text>

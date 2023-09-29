@@ -64,12 +64,19 @@ function App() {
     const poolWETH = useSelector(state => state.amm.poolWETH)
 
     // Call balances for DAPP / USD
-    const token1 = useSelector(state => state.amm.token1)
-    const token2 = useSelector(state => state.amm.token2)
+    // const token1 = useSelector(state => state.amm.token1)
+    // const token2 = useSelector(state => state.amm.token2)
+
+    const [account, setAccount] = useState(null)
 
     // Set Balances for DAPP / USD
     const [balance1, setBalance1] = useState(0)
     const [balance2, setBalance2] = useState(0)
+
+    // Load Account APPL Balance Individually
+    const [dappAccountBalance, setDappAccountBalance] = useState(0)
+    const [usdAccountBalance, setUSDAccountBalance] = useState(0)
+    const [appleAccountBalance, setAppleAccountBalance] = useState(0)
 
     // Set Balances for APPL / USD
     const [appleBalance, setAppleBalance] = useState(0)
@@ -91,6 +98,11 @@ const loadBlockchainData = async () => {
 
     // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
     const chainId = await loadNetwork(provider, dispatch)
+
+    // Load User Account
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    const account = ethers.utils.getAddress(accounts[0])
+    setAccount(account)
 
     // Reload page when network changes
     window.ethereum.on('chainChanged', () => {
@@ -115,6 +127,19 @@ const loadBlockchainData = async () => {
 
     let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
     setApple(apple)
+    
+    // Load APPL Balance Individually
+    let dappAccountBalance = await dapp.balanceOf(accounts[0])
+    dappAccountBalance = ethers.utils.formatUnits(dappAccountBalance, 18)
+    setDappAccountBalance(dappAccountBalance)
+
+    let usdAccountBalance = await usd.balanceOf(accounts[0])
+    usdAccountBalance = ethers.utils.formatUnits(usdAccountBalance, 18)
+    setUSDAccountBalance(usdAccountBalance)
+
+    let appleAccountBalance = await apple.balanceOf(accounts[0])
+    appleAccountBalance = ethers.utils.formatUnits(appleAccountBalance, 18)
+    setAppleAccountBalance(appleAccountBalance)
 
     // Load Dapp DAPP / USD Pool Address
       const amm = new ethers.Contract(config[1].amm.address, AMM_ABI, provider)
@@ -277,7 +302,11 @@ const loadBlockchainData = async () => {
         <Tabs />
 
         <Routes>
-          <Route exact path="/" element={<Swap />} />
+          <Route exact path="/" element={<Swap 
+                                          dappAccountBalance={dappAccountBalance}
+                                          usdAccountBalance={usdAccountBalance}
+                                          appleAccountBalance={appleAccountBalance}
+                                          />} />
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
