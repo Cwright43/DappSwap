@@ -144,19 +144,6 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
   dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
 }
 
-// Load APPL Balance Singularly
-
-export const loadAppleBalance = async (provider, chainId, account, dispatch) => {
-
-  const apple = new ethers.Contract(config[chainId].apple.address, TOKEN_ABI, provider)
-  const appleBalance = await apple.balanceOf(account)
-
-  dispatch(loadAppleBalance([
-    ethers.utils.formatUnits(appleBalance.toString(), 'ether'),
-  ]))
-
-}
-
 // ------------------------------------------------------------------------------
 // ADD LIQUDITY
 export const addLiquidity = async (provider, amm, tokens, amounts, dispatch) => {
@@ -230,7 +217,6 @@ export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amou
     dispatch(swapFail())
   }
 }
-
 
 // ------------------------------------------------------------------------------
 // LOAD ALL SWAPS

@@ -12,20 +12,12 @@ import { ethers } from 'ethers'
 
 import Alert from './Alert'
 
-// ABIs: Import your contract ABIs here
-import AMM_ABI from '../abis/AMM.json'
-import TOKEN_ABI from '../abis/Token.json'
-
-// Config: Import your network config here
-import config from '../config.json';
-
 import {
   swap,
   loadNetwork,
   loadTokens,
   loadAMM,
   loadBalances,
-  loadAppleBalance,
   loadAppleUSD,
   loadDAppApple,
   loadDappAppleUSD,
@@ -33,7 +25,7 @@ import {
 
 } from '../store/interactions'
 
-const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) => {
+const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, rate1, rate2, rate3 } ) => {
   const [inputToken, setInputToken] = useState(null)
   const [outputToken, setOutputToken] = useState(null)
   const [inputAmount, setInputAmount] = useState(0)
@@ -47,27 +39,26 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) =
   const account = useSelector(state => state.provider.account)
 
   // Set Chain ID for Network
-  const chainId = useSelector(state => state.provider.chainId)
-  const tokens = useSelector(state => state.tokens.contracts)
-  const symbols = useSelector(state => state.tokens.symbols)
-  const balances = useSelector(state => state.tokens.balances)
+    const chainId = useSelector(state => state.provider.chainId)
+    const tokens = useSelector(state => state.tokens.contracts)
+    const symbols = useSelector(state => state.tokens.symbols)
+    const balances = useSelector(state => state.tokens.balances)
 
-  const amm = useSelector(state => state.amm.contract)
-  const isSwapping = useSelector(state => state.amm.swapping.isSwapping)
-  const isSuccess = useSelector(state => state.amm.swapping.isSuccess)
-  const transactionHash = useSelector(state => state.amm.swapping.transactionHash)
-  const appleBalance = useSelector(state => state.amm.provider)
+    const amm = useSelector(state => state.amm.contract)
+    const isSwapping = useSelector(state => state.amm.swapping.isSwapping)
+    const isSuccess = useSelector(state => state.amm.swapping.isSuccess)
+    const transactionHash = useSelector(state => state.amm.swapping.transactionHash)
 
-  const token1 = useSelector(state => state.amm.token1)
-  const token2 = useSelector(state => state.amm.token2)
+    const token1 = useSelector(state => state.amm.token1)
+    const token2 = useSelector(state => state.amm.token2)
 
-  const dispatch = useDispatch()
+    const dispatch = useDispatch()
 
-  const testHandler = async (e) => {
-    console.log(`Token 1 Account Balance: ${parseFloat(balances[0]).toFixed(2)}`)
-    console.log(`Token 2 Account Balance: ${parseFloat(balances[1]).toFixed(2)}`)
-    console.log(`Active AMM Address: ${amm.address}`)
-    console.log(`Active Symbol (1): ${symbols}`)
+    const testHandler = async (e) => {
+      console.log(`Token 1 Account Balance: ${parseFloat(balances[0]).toFixed(2)}`)
+      console.log(`Token 2 Account Balance: ${parseFloat(balances[1]).toFixed(2)}`)
+      console.log(`Active AMM Address: ${amm.address}`)
+      console.log(`Active Symbol (1): ${symbols}`)
 }
 
   const inputHandler = async (e) => {
@@ -170,6 +161,29 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) =
     setShowAlert(true)
   }
 
+  const updatePrice = async () => {
+
+    await loadBalances(amm, tokens, account, dispatch)
+
+    if ((inputToken === 'DAPP' && outputToken === 'USD')) {
+      return rate1
+    } else if ((inputToken === 'USD' && outputToken === 'DAPP')) {
+      return rate1
+    }
+
+    if ((inputToken === 'APPL' && outputToken === 'USD')) {
+      return rate2
+    } else if ((inputToken === 'USD' && outputToken === 'APPL')) {
+      return rate2
+    }
+
+    if ((inputToken === 'DAPP' && outputToken === 'APPL')) {
+      return rate3
+    } else if ((inputToken === 'APPL' && outputToken === 'DAPP')) {
+      return rate3
+    }
+
+ }
   const getPrice = async () => {
     if (inputToken === outputToken) {
       setPrice(0)
@@ -219,7 +233,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) =
             }
             console.log(`${price}`)
           }
-
   }
     
   useEffect(() => {
@@ -261,7 +274,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) =
                 <DropdownButton
                   variant="outline-secondary"
                   title={inputToken ? inputToken : "Select Token"}
-                  onChange={(e) => getPrice(e)}
+                  onChange={(e) => updatePrice(e)}
                 >
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >USD</Dropdown.Item>
@@ -275,7 +288,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) =
                 <Form.Label><strong>Output:</strong></Form.Label>
                 <Form.Text muted>
                   Balance: {
-                    outputToken === 'DAPP' ? (
+                    (outputToken) === 'DAPP' ? (
                       parseFloat(dappAccountBalance).toFixed(2)
                     ) : outputToken === 'USD' ? (
                       parseFloat(usdAccountBalance).toFixed(2)
@@ -295,7 +308,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) =
                 <DropdownButton
                   variant="outline-secondary"
                   title={outputToken ? outputToken : "Select Token"}
-                  onChange={(e) => getPrice(e)}
+                  onChange={(e) => updatePrice(e)}
                 >
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>USD</Dropdown.Item>
@@ -312,7 +325,21 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) =
               )}
 
               <Form.Text muted>
-                Exchange Rate: {price}
+                Exchange Rate: {
+                    inputToken === 'DAPP' && outputToken === 'USD' ? (
+                        parseFloat(rate1).toFixed(4) 
+                    ) : inputToken === 'USD' && outputToken === 'DAPP' ? (
+                        parseFloat((1 / rate1)).toFixed(4)
+                     )  : inputToken === 'APPL' && outputToken === 'USD' ? (
+                          parseFloat(rate2).toFixed(4) 
+                      ) : inputToken === 'USD' && outputToken === 'APPL' ? (
+                          parseFloat((1 / rate2)).toFixed(4)
+                       ) : inputToken === 'DAPP' && outputToken === 'APPL' ? (
+                            parseFloat(rate3).toFixed(4) 
+                        ) : inputToken === 'APPL' && outputToken === 'DAPP' ? (
+                            parseFloat((1 / rate3)).toFixed(4)
+                    ) : 0
+                  }
               </Form.Text>
             </Row>
 
@@ -338,7 +365,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance } ) =
                 </Button>
               </p>
 
-      
       {isSwapping ? (
         <Alert
           message={'Swap Pending...'}
