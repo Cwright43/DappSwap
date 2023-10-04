@@ -33,6 +33,7 @@ import config from '../config.json'
 import {
   loadProvider,
   loadNetwork,
+  loadBalances,
   loadAccount,
   loadTokens,
   loadAMM,
@@ -85,9 +86,6 @@ function App() {
     // Set Balances for DAPP / APPL
     const [dappBalance, setDappBalance] = useState(0)
     const [appleBalance2, setAppleBalance2] = useState(0)
-
-    // Set Chain ID for Network
-    const chainId = useSelector(state => state.provider.chainId)
 
     const dispatch = useDispatch()
 
