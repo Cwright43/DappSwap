@@ -7,8 +7,8 @@ import {
 } from './reducers/provider'
 
 import {
-  setContracts, 
-  setSymbols, 
+  setContracts,
+  setSymbols,
   balancesLoaded,
 } from './reducers/tokens'
 
@@ -93,26 +93,21 @@ export const loadAMM = async (provider, chainId, dispatch) => {
   const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
 
   dispatch(setContract(amm))
-
   return amm
 }
   // Load (APPL / USD) Address
   export const loadDappAppleUSD = async (provider, chainId, dispatch) => {
-
     const amm = new ethers.Contract(config[chainId].dappAppleUSD.address, AMM_ABI, provider)
-  
+
     dispatch(setContract(amm))
-  
     return amm
-  
+ 
   }
   // Load (DAPP / APPL) Address
 export const loadDappDappApple = async (provider, chainId, dispatch) => {
-
   const amm = new ethers.Contract(config[chainId].dappDappApple.address, AMM_ABI, provider)
 
   dispatch(setContract(amm))
-
   return amm
 
 }
@@ -195,15 +190,14 @@ export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amou
     dispatch(swapRequest())
 
     let transaction
-
     const signer = await provider.getSigner()
-
+   
     transaction = await token.connect(signer).approve(amm.address, amount)
     await transaction.wait()
 
     if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await amm.connect(signer).swapToken1(amount)
-    } else { 
+    } else {
       transaction = await amm.connect(signer).swapToken2(amount)
     }
 

@@ -12,7 +12,23 @@ import Deposit from './Deposit'
 import Withdraw from './Withdraw'
 import Charts from './Charts'
 
-import Button from 'react-bootstrap/Button'
+// UI Features
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+
+// Card Display Features
+import Button from 'react-bootstrap/Button' 
+import Card from 'react-bootstrap/Card' 
+import Collapse from 'react-bootstrap/Collapse'
+import ListGroup from 'react-bootstrap/ListGroup'
+
+// Token icons
+import T1Icon from '../T1-Icon.png';
+import T2Icon from '../T2-Icon.jpg';
+import T3Icon from '../T3-Icon.jpg';
+import TokenPair from '../TokenPair.jpg';
+import TokenPair2 from '../TokenPair2.png';
+import TokenPair3 from '../TokenPair3.png';
 
 import wethIcon from '../WETH.png'
 import daiIcon from '../DAI.png'
@@ -20,8 +36,6 @@ import dappIcon from '../logo.png'
 import usdIcon from '../T2-Icon.jpg'
 import appleIcon from '../T3-Icon.jpg'
 
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
 
 // ABIs: Import your contract ABIs here
 import AMM_ABI from '../abis/AMM.json'
@@ -33,7 +47,6 @@ import config from '../config.json'
 import {
   loadProvider,
   loadNetwork,
-  loadBalances,
   loadAccount,
   loadTokens,
   loadAMM,
@@ -51,22 +64,23 @@ function App() {
   const [rate2, setRate2] = useState(null)
   const [rate3, setRate3] = useState(null)
 
+  // Card Functionality
+  const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [open3, setOpen3] = useState(false);
+
     // Set Address for DAPP / USD Pool
     const [amm, setAMM] = useState(null)
 
     // Set Address for APPL / USD Pool
     const [dappAppleUSD, setDappAppleUSD] = useState(null)
-    
+   
     // Set Address for DAPP / APPL Pool
     const [dappDappApple, setDappDappApple] = useState(null)
 
     // Load DAI/WETH Balances from Mainnet
     const poolDAI = useSelector(state => state.amm.poolDAI)
     const poolWETH = useSelector(state => state.amm.poolWETH)
-
-    // Call balances for DAPP / USD
-    // const token1 = useSelector(state => state.amm.token1)
-    // const token2 = useSelector(state => state.amm.token2)
 
     const [account, setAccount] = useState(null)
 
@@ -125,7 +139,7 @@ const loadBlockchainData = async () => {
 
       let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
       setApple(apple)
-    
+   
     // Load APPL Balance Individually
       let dappAccountBalance = await dapp.balanceOf(accounts[0])
       dappAccountBalance = ethers.utils.formatUnits(dappAccountBalance, 18)
@@ -183,10 +197,6 @@ const loadBlockchainData = async () => {
       setRate3((appleBalance2 / dappBalance))
   }
 
-  const testHandler = async (e) => {
-      console.log("Testing...")
-  }
-
   useEffect(() => {
     loadBlockchainData()
   }, []);
@@ -196,108 +206,179 @@ const loadBlockchainData = async () => {
       <HashRouter>
 
         <Navigation />
-        <hr />
-<hr className="hr hr-blurry" />
-    <Row>
-      <Col>
-        <h5 className='my-4 text-left'>
-        <img
-                alt="dapptoken"
-                src={dappIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-        DAPP in DAPP / USD Liquidity: <strong>{parseFloat(balance1).toFixed(2)}</strong> tokens</h5>
-        <h5 className='my-4 text-left'>
-        <img
-                alt="usdtoken"
-                src={usdIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-        USD in DAPP / USD Liquidity: <strong>{parseFloat(balance2).toFixed(2)}</strong> tokens</h5>
-        <h5> Exchange Rate: {parseFloat(rate1).toFixed(2)}</h5>
-      </Col>
-      <Col>
-        <h5 className='my-4 text-left'>
-        <img
-                alt="appletoken"
-                src={appleIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-        APPL in APPL / USD Liquidity: <strong>{parseFloat(appleBalance).toFixed(2)}</strong></h5>
-        <h5 className='my-4 text-left'>
-        <img
-                alt="usdtoken"
-                src={usdIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-        USD in APPL / USD Liquidity: <strong>{parseFloat(usdBalance).toFixed(2)}</strong></h5>
-        <h5> Exchange Rate: {parseFloat(rate2).toFixed(2)}</h5>
-      </Col>
-    </Row>
-<hr className="hr hr-blurry" />
-        <h5 className='my-4 text-left'>
-        <img
-                alt="dapptoken"
-                src={dappIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-        DAPP in DAPP / APPL Liquidity: <strong>{parseFloat(dappBalance).toFixed(2)}</strong></h5>
-        <h5 className='my-4 text-left'>
-        <img
-                alt="appletoken"
-                src={appleIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-        APPL in DAPP / APPL Liquidity: <strong>{parseFloat(appleBalance2).toFixed(2)}</strong></h5>
-        <h5> Exchange Rate: {parseFloat(rate3).toFixed(2)}</h5>
-<hr className="hr hr-blurry" />
-        <h5 className='my-4 text-left'>
-        <img
-                alt="daitoken"
-                src={daiIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-          Total DAI in Uniswap: <strong>{parseFloat(poolDAI).toFixed(2)}</strong> tokens</h5>
-        <h5 className='my-4 text-left'>
-        <img
-                alt="wethtoken"
-                src={wethIcon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-          Total WETH in Uniswap: <strong>{parseFloat(poolWETH).toFixed(2)}</strong> tokens</h5>
-        <h5 className='my-4 text-left'>DAI/WETH Rate: <strong>{parseFloat(poolDAI / poolWETH).toFixed(2)}</strong></h5>
-  <hr className="hr hr-blurry" />
 
-              <p>
-                <Button 
-                  variant="primary" 
-                  style={{ width: '20%' }}
-                  onClick={() => testHandler()}
-                  >
-                  Test Button 
-                </Button>
-              </p>
+        <>
+  <Row>
+    <Col>
+      <Button
+        onClick={() => setOpen1(!open1)}
+        aria-controls="example-collapse-text"
+        aria-expanded={open1}
+        className='my-4'
+      >
+        (1) DAPP / USD 
+      </Button>
+      <div style={{ minHeight: '100px', textAlign: 'left'}}>
+        <Collapse in={open1} dimension="width">
+          <div id="example-collapse-text">
+            <Card body style={{ width: '275px', backgroundColor: 'red|transparent' }}>
+          <ListGroup>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+              <img
+                alt="dapptoken"
+                src={T1Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+          <strong>{parseFloat(balance1).toFixed(2)} DAPP</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+              <img
+                alt="USDtoken"
+                src={T2Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid rounded-circle"
+                />
+          <strong>{parseFloat(balance2).toFixed(2)} USD</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="dapp/usd-pair"
+                src={TokenPair}
+                width="70"
+                height="40"
+                className="align-right mx-3 img-fluid rounded"
+                />
+          <strong>Rate: {parseFloat(rate1).toFixed(2)}</strong></h6>
+            </ListGroup.Item>
+         </ListGroup> 
+            </Card>
+         
+          </div>
+        </Collapse>
+      </div>
+    </Col>
+    <Col>
+      <Button
+        onClick={() => setOpen2(!open2)}
+        aria-controls="example-collapse-text"
+        aria-expanded={open2}
+        className='my-4'
+      >
+        (2) APPL / USD 
+      </Button>
+      <div style={{ minHeight: '100px', textAlign: 'left'}}>
+        <Collapse in={open2} dimension="width">
+          <div id="example-collapse-text">
+            <Card body style={{ width: '275px', backgroundColor: 'red|transparent' }}>
+          <ListGroup>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="appltoken"
+                src={T3Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid rounded-circle"
+                />
+          <strong>{parseFloat(appleBalance).toFixed(2)} APPL</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="usdtoken"
+                src={T2Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid rounded-circle"
+                />
+          <strong>{parseFloat(usdBalance).toFixed(2)} USD</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="appl/usd-pair"
+                src={TokenPair2}
+                width="70"
+                height="40"
+                className="align-right mx-3 img-fluid rounded"
+                />
+          <strong>Rate: {parseFloat(rate2).toFixed(2)}</strong></h6>
+            </ListGroup.Item>
+         </ListGroup> 
+            </Card>
+         
+          </div>
+        </Collapse>
+      </div>
+    </Col>
+  
+    <Col>
+      <Button
+        onClick={() => setOpen3(!open3)}
+        aria-controls="example-collapse-text"
+        aria-expanded={open3}
+        className='my-4'
+      >
+        (3) DAPP / APPL 
+      </Button>
+      <div style={{ minHeight: '100px', textAlign: 'left'}}>
+        <Collapse in={open3} dimension="width">
+          <div id="example-collapse-text">
+            <Card body style={{ width: '275px', backgroundColor: 'red|transparent' }}>
+          <ListGroup>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="dapptoken"
+                src={T1Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+          <strong>{parseFloat(dappBalance).toFixed(2)} DAPP</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="appletoken"
+                src={T3Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid rounded-circle"
+                />
+          <strong>{parseFloat(appleBalance2).toFixed(2)} APPL</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="dapp/apple-pair"
+                src={TokenPair3}
+                width="70"
+                height="40"
+                className="align-right mx-3 img-fluid rounded"
+                />
+          <strong>Rate: {parseFloat(rate3).toFixed(2)}</strong></h6>
+            </ListGroup.Item>
+         </ListGroup> 
+            </Card>
+          </div>
+        </Collapse>
+      </div>
+    </Col>
+    </Row>
+    </>
+        <hr />
 
         <Tabs />
 
         <Routes>
-          <Route exact path="/" element={<Swap 
+          <Route exact path="/" element={<Swap
                                           dappAccountBalance={dappAccountBalance}
                                           usdAccountBalance={usdAccountBalance}
                                           appleAccountBalance={appleAccountBalance}
@@ -309,10 +390,9 @@ const loadBlockchainData = async () => {
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
         </Routes>
-        
+       
       </HashRouter>
     </Container>
-
   )
 }
 

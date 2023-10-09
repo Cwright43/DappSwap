@@ -42,9 +42,7 @@ const Charts = () => {
             width="100%"
             height="100%"
           />
-
-          <hr />
-
+      <hr />
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -85,21 +83,11 @@ const Charts = () => {
             </tbody>
           </Table>
         </div>
-
       ) : (
         <Loading/>
       )}
-
     </div>
   );
 }
 
 export default Charts;
-
-
-
-
-
-
-
-
