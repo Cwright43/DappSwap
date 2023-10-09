@@ -95,8 +95,8 @@ const Withdraw = () => {
             <hr />
 
             <Row>
-              <p><strong>DAPP Balance:</strong> {balances[0]}</p>
-              <p><strong>USD Balance:</strong> {balances[1]}</p>
+              <p><strong>DAPP Balance:</strong> {parseFloat(balances[0]).toFixed(2)}</p>
+              <p><strong>USD Balance:</strong> {parseFloat(balances[0]).toFixed(2)}</p>
             </Row>
 
           </Form>

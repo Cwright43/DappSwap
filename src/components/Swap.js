@@ -50,6 +50,8 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, rate
     const isSuccess = useSelector(state => state.amm.swapping.isSuccess)
     const transactionHash = useSelector(state => state.amm.swapping.transactionHash)
 
+    // Load Shares
+    const shares = useSelector(state => state.amm.shares)
     const token1 = useSelector(state => state.amm.token1)
     const token2 = useSelector(state => state.amm.token2)
 
@@ -62,6 +64,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, rate
       console.log(`Active Symbols: ${symbols}`)
       console.log(`Protocol Number: ${protocol}`)
       console.log(`Exchange Rate: ${price}`)
+      console.log(`Shares: ${shares}`)
      
 }
 
