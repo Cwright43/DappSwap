@@ -22,11 +22,8 @@ const Withdraw = () => {
 
   const provider = useSelector(state => state.provider.connection)
   const account = useSelector(state => state.provider.account)
-
+  
   const shares = useSelector(state => state.amm.shares)
-  const token1 = useSelector(state => state.amm.token1)
-  const token2 = useSelector(state => state.amm.token2)
-
   const tokens = useSelector(state => state.tokens.contracts)
   const balances = useSelector(state => state.tokens.balances)
 

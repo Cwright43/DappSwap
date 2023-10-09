@@ -22,20 +22,17 @@ import Card from 'react-bootstrap/Card'
 import Collapse from 'react-bootstrap/Collapse'
 import ListGroup from 'react-bootstrap/ListGroup'
 
-// Token icons
+// Token icons & Background
 import T1Icon from '../T1-Icon.png';
 import T2Icon from '../T2-Icon.jpg';
 import T3Icon from '../T3-Icon.jpg';
 import TokenPair from '../TokenPair.jpg';
 import TokenPair2 from '../TokenPair2.png';
 import TokenPair3 from '../TokenPair3.png';
+import backgroundimage from '../DappBackground.jpg';
 
 import wethIcon from '../WETH.png'
 import daiIcon from '../DAI.png'
-import dappIcon from '../logo.png'
-import usdIcon from '../T2-Icon.jpg'
-import appleIcon from '../T3-Icon.jpg'
-
 
 // ABIs: Import your contract ABIs here
 import AMM_ABI from '../abis/AMM.json'
@@ -55,55 +52,55 @@ import {
 function App() {
 
   // Set Token Addresses
-  const [usd, setUSD] = useState(null)
-  const [dapp, setDapp] = useState(null)
-  const [apple, setApple] = useState(null)
+    const [usd, setUSD] = useState(null)
+    const [dapp, setDapp] = useState(null)
+    const [apple, setApple] = useState(null)
 
   // Set rate values for each trading pair
-  const [rate1, setRate1] = useState(null)
-  const [rate2, setRate2] = useState(null)
-  const [rate3, setRate3] = useState(null)
+    const [rate1, setRate1] = useState(null)
+    const [rate2, setRate2] = useState(null)
+    const [rate3, setRate3] = useState(null)
 
   // Card Functionality
-  const [open1, setOpen1] = useState(false);
-  const [open2, setOpen2] = useState(false);
-  const [open3, setOpen3] = useState(false);
+    const [open1, setOpen1] = useState(false);
+    const [open2, setOpen2] = useState(false);
+    const [open3, setOpen3] = useState(false);
 
-    // Set Address for DAPP / USD Pool
+  // Set Address for DAPP / USD Pool
     const [amm, setAMM] = useState(null)
 
-    // Set Address for APPL / USD Pool
+  // Set Address for APPL / USD Pool
     const [dappAppleUSD, setDappAppleUSD] = useState(null)
    
-    // Set Address for DAPP / APPL Pool
+  // Set Address for DAPP / APPL Pool
     const [dappDappApple, setDappDappApple] = useState(null)
 
-    // Load DAI/WETH Balances from Mainnet
+  // Load DAI/WETH Balances from Mainnet
     const poolDAI = useSelector(state => state.amm.poolDAI)
     const poolWETH = useSelector(state => state.amm.poolWETH)
 
     const [account, setAccount] = useState(null)
 
-    // Set Balances for DAPP / USD
+  // Set Balances for DAPP / USD
     const [balance1, setBalance1] = useState(0)
     const [balance2, setBalance2] = useState(0)
 
-    // Load Account APPL Balance Individually
+  // Load Account APPL Balance Individually
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
     const [usdAccountBalance, setUSDAccountBalance] = useState(0)
     const [appleAccountBalance, setAppleAccountBalance] = useState(0)
 
-    // Set Balances for APPL / USD
+  // Set Balances for APPL / USD
     const [appleBalance, setAppleBalance] = useState(0)
     const [usdBalance, setUSDBalance] = useState(0)
 
-    // Set Balances for DAPP / APPL
+  // Set Balances for DAPP / APPL
     const [dappBalance, setDappBalance] = useState(0)
     const [appleBalance2, setAppleBalance2] = useState(0)
 
     const dispatch = useDispatch()
 
-const loadBlockchainData = async () => {
+  const loadBlockchainData = async () => {
 
     // Initiate provider
       const provider = await loadProvider(dispatch)
@@ -202,11 +199,19 @@ const loadBlockchainData = async () => {
   }, []);
 
   return(
+
+<div  style={{
+      backgroundImage: `url(${backgroundimage})`,
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
+      width: '100vw',
+      height: '100vh'
+      }}>
     <Container>
       <HashRouter>
-
-        <Navigation />
-
+         <style>{'body { background-color: blue; }'}</style>
+        <Navigation  />
         <>
   <Row>
     <Col>
@@ -317,7 +322,6 @@ const loadBlockchainData = async () => {
         </Collapse>
       </div>
     </Col>
-  
     <Col>
       <Button
         onClick={() => setOpen3(!open3)}
@@ -374,9 +378,7 @@ const loadBlockchainData = async () => {
     </Row>
     </>
         <hr />
-
-        <Tabs />
-
+       <Tabs />
         <Routes>
           <Route exact path="/" element={<Swap
                                           dappAccountBalance={dappAccountBalance}
@@ -390,9 +392,9 @@ const loadBlockchainData = async () => {
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
         </Routes>
-       
       </HashRouter>
     </Container>
+  </div>
   )
 }
 
