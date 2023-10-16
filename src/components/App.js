@@ -55,6 +55,9 @@ function App() {
     const [usd, setUSD] = useState(null)
     const [dapp, setDapp] = useState(null)
     const [apple, setApple] = useState(null)
+    const [dai, setDAI] = useState(null)
+    const [weth, setWETH] = useState(null)
+    const [daiWethUniswap, setDaiWethUniswap] = useState(null)
 
   // Set rate values for each trading pair
     const [rate1, setRate1] = useState(null)
@@ -89,6 +92,8 @@ function App() {
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
     const [usdAccountBalance, setUSDAccountBalance] = useState(0)
     const [appleAccountBalance, setAppleAccountBalance] = useState(0)
+    const [daiAccountBalance, setDAIAccountBalance] = useState(0)
+    const [wethAccountBalance, setWETHAccountBalance] = useState(0)
 
   // Set Balances for APPL / USD
     const [appleBalance, setAppleBalance] = useState(0)
@@ -136,6 +141,12 @@ function App() {
 
       let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
       setApple(apple)
+
+      let dai = new ethers.Contract(config[1].dai.address, TOKEN_ABI, provider)
+      setDAI(dai)
+
+      let weth = new ethers.Contract(config[1].weth.address, TOKEN_ABI, provider)
+      setWETH(weth)
    
     // Load APPL Balance Individually
       let dappAccountBalance = await dapp.balanceOf(accounts[0])
@@ -150,6 +161,14 @@ function App() {
       appleAccountBalance = ethers.utils.formatUnits(appleAccountBalance, 18)
       setAppleAccountBalance(appleAccountBalance)
 
+      let daiAccountBalance = await dai.balanceOf(accounts[0])
+      daiAccountBalance = ethers.utils.formatUnits(daiAccountBalance, 18)
+      setDAIAccountBalance(daiAccountBalance)
+
+      let wethAccountBalance = await weth.balanceOf(accounts[0])
+      wethAccountBalance = ethers.utils.formatUnits(wethAccountBalance, 18)
+      setWETHAccountBalance(wethAccountBalance)
+
     // Load Dapp DAPP / USD Pool Address
       const amm = new ethers.Contract(config[1].amm.address, AMM_ABI, provider)
       setAMM(amm)
@@ -161,6 +180,10 @@ function App() {
     // Load Dapp DAPP / APPL Pool Address
       const dappDappApple = new ethers.Contract(config[1].dappDappApple.address, AMM_ABI, provider)
       setDappDappApple(dappDappApple)
+
+    // Load Dapp DAPP / APPL Pool Address
+    const daiWethUniswap = new ethers.Contract(config[1].daiWethUniswap.address, AMM_ABI, provider)
+    setDaiWethUniswap(daiWethUniswap)
 
     // Load Balances for DAPP / USD
       let balance1 = await dapp.balanceOf(amm.address)
@@ -214,6 +237,8 @@ function App() {
         <Navigation  />
         <>
   <Row>
+  <h4 className="text-center">Total DAI: {parseFloat(poolDAI).toFixed(2)}</h4>
+  <h4 className="text-center">Total WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
     <Col>
       <Button
         onClick={() => setOpen1(!open1)}
@@ -384,6 +409,11 @@ function App() {
                                           dappAccountBalance={dappAccountBalance}
                                           usdAccountBalance={usdAccountBalance}
                                           appleAccountBalance={appleAccountBalance}
+                                          daiAccountBalance={daiAccountBalance}
+                                          wethAccountBalance={wethAccountBalance}
+                                          dai={dai}
+                                          weth={weth}
+                                          daiWethUniswap={daiWethUniswap}
                                           rate1={rate1}
                                           rate2={rate2}
                                           rate3={rate3}

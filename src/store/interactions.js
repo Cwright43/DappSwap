@@ -88,6 +88,15 @@ export const loadDAppApple = async (provider, chainId, dispatch) => {
   dispatch(setSymbols([await dapp.symbol(), await apple.symbol()]))
 }
 
+// Load DAPP / APPL Token Pair
+export const loadDaiWETH = async (provider, chainId, dispatch) => {
+  const dai = new ethers.Contract(config[chainId].dai.address, TOKEN_ABI, provider)
+  const weth = new ethers.Contract(config[chainId].weth.address, TOKEN_ABI, provider)
+
+  dispatch(setContracts([dai, weth]))
+  dispatch(setSymbols([await dai.symbol(), await weth.symbol()]))
+}
+
 // --------------------------------------//
 //          Load Liquidity Pools         //
 // --------------------------------------//
@@ -105,11 +114,19 @@ export const loadDappAppleUSD = async (provider, chainId, dispatch) => {
 
   dispatch(setContract(amm))
   return amm
-  }
+}
 
 // Load (DAPP / APPL) Address
 export const loadDappDappApple = async (provider, chainId, dispatch) => {
   const amm = new ethers.Contract(config[chainId].dappDappApple.address, AMM_ABI, provider)
+
+  dispatch(setContract(amm))
+  return amm
+}
+
+// Load (DAI / WETH) Address
+export const loadUniswap = async (provider, chainId, dispatch) => {
+  const amm = new ethers.Contract(config[chainId].daiWethUniswap.address, AMM_ABI, provider)
 
   dispatch(setContract(amm))
   return amm
@@ -185,18 +202,44 @@ export const removeLiquidity = async (provider, amm, shares, dispatch) => {
 }
 
 // Swap Functionality
-export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amount, dispatch) => {
+export const swap = async (provider, amm, token1, token2, inputSymbol, outputSymbol, amount, dispatch) => {
   try {
 
     dispatch(swapRequest())
 
     let transaction
     const signer = await provider.getSigner()
-   
-    transaction = await token.connect(signer).approve(amm.address, amount)
-    await transaction.wait()
 
-    if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
+
+  if ((inputSymbol === "DAPP") || (inputSymbol === "USD") || (inputSymbol === "APPL")
+       || (outputSymbol === "DAPP") || (outputSymbol === "USD") || (outputSymbol === "APPL")) {
+    transaction = await token1.connect(signer).approve(amm.address, amount)
+    await transaction.wait()
+  } else if ((inputSymbol === "DAI") && (outputSymbol === "WETH")) {
+    console.log(`Test A`)
+    transaction = await amm.connect(signer).daiApprove(amount)
+    transaction = await amm.connect(signer).wethApprove(amount)
+    transaction = await token1.connect(signer).approve(amm.address, amount)
+    transaction = await token2.connect(signer).approve(amm.address, amount)
+    await transaction.wait()
+  } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
+    console.log(`${amount}`)
+    console.log(`Test B`)
+    transaction = await amm.connect(signer).daiApprove(amount)
+    transaction = await amm.connect(signer).wethApprove(amount)
+    transaction = await token1.connect(signer).approve(amm.address, amount)
+    transaction = await token2.connect(signer).approve(amm.address, amount)
+    await transaction.wait()
+  }
+
+
+    if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
+      console.log(`Test 2`)
+      transaction = await amm.connect(signer).uniswap1(amount)
+    } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
+      console.log(`Test 3`)
+      transaction = await amm.connect(signer).uniswap2(amount)
+    } else if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await amm.connect(signer).swapToken1(amount)
     } else {
       transaction = await amm.connect(signer).swapToken2(amount)
