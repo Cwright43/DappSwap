@@ -20,6 +20,15 @@ interface IWETH is IERC20 {
 
 }
 
+interface IUniswapV2ERC20 {
+
+    function getPair(address tokenA, address tokenB) external view returns (address pair);
+
+    function transfer(address to, uint value ) external returns (bool);
+
+    function transferFrom(address from, address to, uint value) external returns (bool);
+}
+
 interface IUniswapV2Factory {
 
     function getPair(address tokenA, address tokenB) external view returns (address pair);
@@ -28,6 +37,9 @@ interface IUniswapV2Factory {
 interface IUniswapV2Pair {
 
     function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external;
+
+    function approve(address spender, uint value) external returns (bool);
+
 }
 
 contract AMM {
@@ -287,14 +299,11 @@ contract AMM {
         token2Amount = calculateDaiSwap(_token1Amount);
 
       // Approve exchange to spend DAI and WETH
-        IWETH(daiAddress).approve(daiWETHpool, _token1Amount);
-        IWETH(wethAddress).approve(daiWETHpool, token2Amount);
+        IUniswapV2Pair(daiAddress).approve(daiWETHpool, _token1Amount);
+        IUniswapV2Pair(wethAddress).approve(daiWETHpool, token2Amount);
 
-        IWETH(daiAddress).approve(address(this), _token1Amount);
-        IWETH(wethAddress).approve(address(this), token2Amount);
-
-        IWETH(daiAddress).approve(msg.sender, _token1Amount);
-        IWETH(wethAddress).approve(msg.sender, token2Amount);
+        IUniswapV2Pair(daiAddress).approve(address(this), _token1Amount);
+        IUniswapV2Pair(wethAddress).approve(address(this), token2Amount);
 
     }
 
@@ -306,14 +315,11 @@ contract AMM {
         token1Amount = calculateWethSwap(_token2Amount);
 
       // Approve exchange to spend DAI and WETH
-        require(IWETH(wethAddress).approve(daiWETHpool, _token2Amount), "DAI Not Approved");
-        require(IWETH(daiAddress).approve(daiWETHpool, token1Amount), "WETH Not Approved");
+        IUniswapV2Pair(wethAddress).approve(daiWETHpool, _token2Amount);
+        IUniswapV2Pair(daiAddress).approve(daiWETHpool, token1Amount);
 
-        require(IWETH(wethAddress).approve(address(this), _token2Amount), "DAI Not Approved");
-        require(IWETH(daiAddress).approve(address(this), token1Amount), "WETH Not Approved");
-
-        require(IWETH(wethAddress).approve(msg.sender, _token2Amount), "DAI Not Approved");
-        require(IWETH(daiAddress).approve(msg.sender, token1Amount), "WETH Not Approved");
+        IUniswapV2Pair(wethAddress).approve(address(this), _token2Amount);
+        IUniswapV2Pair(daiAddress).approve(address(this), token1Amount);
 
     }
 
@@ -324,22 +330,15 @@ contract AMM {
         // Calculate Token 2 Amount
         token2Amount = calculateDaiSwap(_token1Amount);
 
-        bytes memory data = abi.encode(daiAddress, token2Amount);
+        bytes memory data = abi.encode(daiAddress, _token1Amount);
 
         // Approve exchange to spend DAI and WETH
 
-        /*
+        IUniswapV2Pair(daiAddress).approve(daiWETHpool, _token1Amount);
+        IUniswapV2Pair(wethAddress).approve(daiWETHpool, token2Amount);
 
-        IWETH(daiAddress).approve(daiWETHpool, _token1Amount);
-        IWETH(wethAddress).approve(daiWETHpool, token2Amount);
-
-        IWETH(daiAddress).approve(address(this), _token1Amount);
-        IWETH(wethAddress).approve(address(this), token2Amount);
-
-        IWETH(daiAddress).approve(msg.sender, _token1Amount);
-        IWETH(wethAddress).approve(msg.sender, token2Amount);
-
-        */
+        IUniswapV2Pair(daiAddress).approve(address(this), _token1Amount);
+        IUniswapV2Pair(wethAddress).approve(address(this), token2Amount);
 
         // Do Swap
         
@@ -347,18 +346,19 @@ contract AMM {
 
         // bytes memory data = abi.encode()
 
-        // IWETH(daiAddress).transferFrom(msg.sender, address(this), _token1Amount);
+        IUniswapV2ERC20(daiAddress).transferFrom(msg.sender, address(this), _token1Amount);
+
+        IUniswapV2Pair(pair).swap(_token1Amount, token2Amount, address(this), data);
+
+        IUniswapV2ERC20(wethAddress).transfer(msg.sender, token2Amount);
+
+        // IUniswapV2ERC20(wethAddress).transfer(msg.sender, token2Amount);
        
         // IWETH(daiAddress).transfer(daiWETHpool, _token1Amount);
 
         // daiWETHpool.deposit(daiAddress, _token1Amount, address(this), 0);
 
         // IWETH(wethAddress).transferFrom(daiWETHpool, address(this), token2Amount);
-        
-
-        IUniswapV2Pair(pair).swap(_token1Amount, token2Amount, msg.sender, data );
-
-        // IWETH(wethAddress).transfer(msg.sender, token2Amount);
 
         poolDAIbalance += _token1Amount;
         poolWETHbalance -= token2Amount;
