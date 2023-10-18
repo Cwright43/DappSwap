@@ -57,7 +57,10 @@ function App() {
     const [apple, setApple] = useState(null)
     const [dai, setDAI] = useState(null)
     const [weth, setWETH] = useState(null)
+    const [wallet, setWallet] = useState(null)
     const [daiWethUniswap, setDaiWethUniswap] = useState(null)
+    const [routerAddress, setRouterAddress] = useState(null)
+    const [router, setRouter] = useState(null)
 
   // Set rate values for each trading pair
     const [rate1, setRate1] = useState(null)
@@ -83,6 +86,7 @@ function App() {
     const poolWETH = useSelector(state => state.amm.poolWETH)
 
     const [account, setAccount] = useState(null)
+    const [signer, setSigner] = useState(null)
 
   // Set Balances for DAPP / USD
     const [balance1, setBalance1] = useState(0)
@@ -103,6 +107,10 @@ function App() {
     const [dappBalance, setDappBalance] = useState(0)
     const [appleBalance2, setAppleBalance2] = useState(0)
 
+    const routerArtifact = require('@uniswap/v2-periphery/build/UniswapV2Router02.json')
+    const erc20Abi = require('../abis/erc20.json')
+    const wethArtifact = require('../abis/weth.json')
+
     const dispatch = useDispatch()
 
   const loadBlockchainData = async () => {
@@ -117,6 +125,12 @@ function App() {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
       const account = ethers.utils.getAddress(accounts[0])
       setAccount(account)
+
+      const wallet = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80')
+      setWallet(wallet)
+
+      const signer = wallet.connect(provider)
+      setSigner(signer)
 
     // Reload page when network changes
       window.ethereum.on('chainChanged', () => {
@@ -142,10 +156,10 @@ function App() {
       let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
       setApple(apple)
 
-      let dai = new ethers.Contract(config[1].dai.address, TOKEN_ABI, provider)
+      let dai = new ethers.Contract(config[1].dai.address, erc20Abi, provider)
       setDAI(dai)
 
-      let weth = new ethers.Contract(config[1].weth.address, TOKEN_ABI, provider)
+      let weth = new ethers.Contract(config[1].weth.address, wethArtifact.abi, provider)
       setWETH(weth)
    
     // Load APPL Balance Individually
@@ -182,8 +196,12 @@ function App() {
       setDappDappApple(dappDappApple)
 
     // Load Dapp DAPP / APPL Pool Address
-    const daiWethUniswap = new ethers.Contract(config[1].daiWethUniswap.address, AMM_ABI, provider)
-    setDaiWethUniswap(daiWethUniswap)
+      const daiWethUniswap = new ethers.Contract(config[1].daiWethUniswap.address, AMM_ABI, provider)
+      setDaiWethUniswap(daiWethUniswap)
+
+    // Load UniswapV2 Router Address
+      const router = new ethers.Contract(routerAddress, routerArtifact.abi, provider)
+      setRouter(router)
 
     // Load Balances for DAPP / USD
       let balance1 = await dapp.balanceOf(amm.address)
@@ -414,6 +432,8 @@ function App() {
                                           dai={dai}
                                           weth={weth}
                                           daiWethUniswap={daiWethUniswap}
+                                          signer={signer}
+                                          router={router}
                                           rate1={rate1}
                                           rate2={rate2}
                                           rate3={rate3}

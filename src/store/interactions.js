@@ -217,16 +217,16 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
     await transaction.wait()
   } else if ((inputSymbol === "DAI") && (outputSymbol === "WETH")) {
     console.log(`Test A`)
-    transaction = await amm.connect(signer).daiApprove(amount)
-    transaction = await amm.connect(signer).wethApprove(amount)
+    // transaction = await amm.connect(signer).daiApprove(amount)
+    // transaction = await amm.connect(signer).wethApprove(amount)
     transaction = await token1.connect(signer).approve(amm.address, amount)
     transaction = await token2.connect(signer).approve(amm.address, amount)
     await transaction.wait()
   } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
     console.log(`${amount}`)
     console.log(`Test B`)
-    transaction = await amm.connect(signer).daiApprove(amount)
-    transaction = await amm.connect(signer).wethApprove(amount)
+    // transaction = await amm.connect(signer).daiApprove(amount)
+    // transaction = await amm.connect(signer).wethApprove(amount)
     transaction = await token1.connect(signer).approve(amm.address, amount)
     transaction = await token2.connect(signer).approve(amm.address, amount)
     await transaction.wait()
@@ -235,10 +235,10 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
 
     if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
       console.log(`Test 2`)
-      transaction = await amm.connect(signer).uniswap1(amount)
+      // transaction = await amm.connect(signer).uniswap1(amount)
     } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
       console.log(`Test 3`)
-      transaction = await amm.connect(signer).uniswap2(amount)
+      // transaction = await amm.connect(signer).uniswap2(amount)
     } else if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await amm.connect(signer).swapToken1(amount)
     } else {

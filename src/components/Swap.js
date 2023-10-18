@@ -29,7 +29,7 @@ import {
 const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, 
                 daiAccountBalance, wethAccountBalance, 
                 dai, weth,
-                daiWethUniswap,
+                daiWethUniswap, signer, router,
                 rate1, rate2, rate3 } ) => {
 
     // Declare Input/Output Token Features
@@ -147,6 +147,15 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
         if (inputToken === 'DAI' && outputToken === 'WETH' ) {
           console.log(`${_inputAmount}`)
             await swap(provider, amm, tokens[0], tokens[1], inputToken, outputToken, _inputAmount, dispatch)
+            const tx1 = await daiWethUniswap.connect(signer).swapExactTokensForTokens(
+              _inputAmount,
+              0,
+              [dai, weth],
+              signer.address,
+              Math.floor( Date.now() / 1000 ) + (60 * 10),
+              { gasLimit: 1000000, }
+            )
+            await tx1.wait()
           } else if (inputToken === 'WETH' && outputToken === 'DAI' )  {
             await swap(provider, amm, tokens[1], tokens[0], inputToken, outputToken, _inputAmount, dispatch)
         } 
