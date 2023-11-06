@@ -145,9 +145,21 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     
         // Swap token depending upon which one we're doing...
         if (inputToken === 'DAI' && outputToken === 'WETH' ) {
-          console.log(`${_inputAmount}`)
             await swap(provider, amm, tokens[0], tokens[1], inputToken, outputToken, _inputAmount, dispatch)
-            const tx1 = await daiWethUniswap.connect(signer).swapExactTokensForTokens(
+            
+            // const tx1 = await weth.connect(signer).approve(router.target, _inputAmount)
+            // tx1.wait()
+
+            console.log("Y")
+
+            console.log(`${_inputAmount}`)
+            console.log(`${signer.address}`)
+            console.log(`${dai.address}`)
+            console.log(`${weth.address}`)
+
+          /*
+
+            const tx2 = await router.connect(signer).swapExactTokensForTokens(
               _inputAmount,
               0,
               [dai, weth],
@@ -155,16 +167,18 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
               Math.floor( Date.now() / 1000 ) + (60 * 10),
               { gasLimit: 1000000, }
             )
-            await tx1.wait()
+            console.log("Z")
+            await tx2.wait()
+            */
           } else if (inputToken === 'WETH' && outputToken === 'DAI' )  {
             await swap(provider, amm, tokens[1], tokens[0], inputToken, outputToken, _inputAmount, dispatch)
-        } 
+        }
         
         else if (protocol === 1) {
             await swap(provider, amm, tokens[0],  tokens[1], inputToken, outputToken, _inputAmount, dispatch)
           } else if (protocol === 2) {
             await swap(provider, amm, tokens[1],  tokens[0], inputToken, outputToken, _inputAmount, dispatch)
-        }
+          }
 
         await loadBalances(amm, tokens, account, dispatch)
         await getPrice()

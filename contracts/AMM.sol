@@ -7,6 +7,7 @@ import "./Token.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 
 interface IWETH is IERC20 {
 
@@ -51,13 +52,14 @@ contract AMM {
     uint256 public poolDAIbalance;
     uint256 public poolWETHbalance;
 
+    address public owner;
+
     address public constant wethAddress = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant daiAddress = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
     address public constant daiWETHpool = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
+    address public constant uniswapV2Router = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
-
-    // uint256 public dexToken1Balance;
-    // uint256 public dexToken2Balance;
+    IUniswapV2Router02 public immutable uRouter;
 
     uint256 public token1Balance;
     uint256 public token2Balance;
@@ -90,26 +92,14 @@ contract AMM {
         poolDAIbalance = IWETH(daiAddress).balanceOf(daiWETHpool);
         poolWETHbalance = IWETH(wethAddress).balanceOf(daiWETHpool);
         K1 = poolDAIbalance * poolWETHbalance;
+        owner = msg.sender;
+        uRouter = IUniswapV2Router02(uniswapV2Router);
     }
 
     function addDEXList(address _newDEX) public {
         dexlist[listCount] = _newDEX;
         listCount++;
     }
-
-    /*
-
-    function fetchT1Balance(uint256 _dexListing) public view returns (uint256 dexToken1Balance) {
-
-        dexToken1Balance = token1.balanceOf(dexlist[_dexListing]);
-    }
-
-    function fetchT2Balance(uint256 _dexListing) public view returns (uint256 dexToken2Balance) {
-
-        dexToken2Balance = token2.balanceOf(dexlist[_dexListing]);
-    }
-
-    */
 
     function addLiquidity(uint256 _token1Amount, uint256 _token2Amount) external {
         // Deposit Tokens
@@ -253,8 +243,6 @@ contract AMM {
         require(token1Amount < token1Balance, "swap amount too large");
     }
 
-    //--------------------------------------------------------------
-
     // Returns amount of token2 received when swapping token1
     function calculateDaiSwap(uint256 _token1Amount)
         public
@@ -291,6 +279,8 @@ contract AMM {
         require(token1Amount < poolDAIbalance, "swap amount too large");
     }
 
+    /*
+
     function daiApprove(uint256 _token1Amount)
         external
         returns(uint256 token2Amount)
@@ -323,6 +313,8 @@ contract AMM {
 
     }
 
+    */
+
     function uniswap1(uint256 _token1Amount)
         external
         returns(uint256 token2Amount)
@@ -330,34 +322,35 @@ contract AMM {
         // Calculate Token 2 Amount
         token2Amount = calculateDaiSwap(_token1Amount);
 
-        bytes memory data = abi.encode(daiAddress, _token1Amount);
+        // bytes memory data = abi.encode(daiAddress, _token1Amount);
 
         // Approve exchange to spend DAI and WETH
-
-        IUniswapV2Pair(daiAddress).approve(daiWETHpool, _token1Amount);
-        IUniswapV2Pair(wethAddress).approve(daiWETHpool, token2Amount);
+        IUniswapV2Pair(daiAddress).approve(address(uRouter), _token1Amount);
+        IUniswapV2Pair(wethAddress).approve(address(uRouter), token2Amount);
 
         IUniswapV2Pair(daiAddress).approve(address(this), _token1Amount);
         IUniswapV2Pair(wethAddress).approve(address(this), token2Amount);
 
-        // Do Swap
-        
-        address pair = IUniswapV2Factory(daiWETHpool).getPair(daiAddress, wethAddress);
+        // Use the money here!
+        address[] memory path = new address[](2);
 
-        // bytes memory data = abi.encode()
+        path[0] = daiAddress;
+        path[1] = wethAddress;
+
+        // Do Swap
 
         IUniswapV2ERC20(daiAddress).transferFrom(msg.sender, address(this), _token1Amount);
 
-        IUniswapV2Pair(pair).swap(_token1Amount, token2Amount, address(this), data);
+        _swapOnUniswap(path, _token1Amount, 0);
 
         IUniswapV2ERC20(wethAddress).transfer(msg.sender, token2Amount);
-
+        
+        // address pair = IUniswapV2Factory(daiWETHpool).getPair(daiAddress, wethAddress);
+        // bytes memory data = abi.encode()
+        // IUniswapV2Pair(pair).swap(_token1Amount, token2Amount, address(this), data);
         // IUniswapV2ERC20(wethAddress).transfer(msg.sender, token2Amount);
-       
         // IWETH(daiAddress).transfer(daiWETHpool, _token1Amount);
-
         // daiWETHpool.deposit(daiAddress, _token1Amount, address(this), 0);
-
         // IWETH(wethAddress).transferFrom(daiWETHpool, address(this), token2Amount);
 
         poolDAIbalance += _token1Amount;
@@ -414,6 +407,25 @@ contract AMM {
         );
     }
 
+
+    function _swapOnUniswap(
+        address[] memory _path,
+        uint256 _amountIn,
+        uint256 _amountOut
+    ) internal {
+        require(
+            IERC20(_path[0]).approve(address(uRouter), _amountIn),
+            "Uniswap approval failed."
+        );
+
+        uRouter.swapExactTokensForTokens(
+            _amountIn,
+            _amountOut,
+            _path,
+            address(this),
+            (block.timestamp + 1200)
+        );
+    }
 
     // Determine how many tokens will be withdrawn
     function calculateWithdrawAmount(uint256 _share)

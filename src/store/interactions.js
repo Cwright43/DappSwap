@@ -235,7 +235,7 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
 
     if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
       console.log(`Test 2`)
-      // transaction = await amm.connect(signer).uniswap1(amount)
+      transaction = await amm.connect(signer).uniswap1(amount)
     } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
       console.log(`Test 3`)
       // transaction = await amm.connect(signer).uniswap2(amount)
@@ -245,13 +245,19 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
       transaction = await amm.connect(signer).swapToken2(amount)
     }
 
+    /*
+
     await transaction.wait()
     
     dispatch(swapSuccess(transaction.hash))
 
+      */
+
   } catch (error) {
     dispatch(swapFail())
   }
+
+
 }
 
 // Load All Swaps

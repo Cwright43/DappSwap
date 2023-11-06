@@ -38,6 +38,14 @@ import daiIcon from '../DAI.png'
 import AMM_ABI from '../abis/AMM.json'
 import TOKEN_ABI from '../abis/Token.json'
 
+/*
+
+import routerArtifact from '@uniswap/v2-periphery/build/UniswapV2Router02.json'
+import erc20Abi from '../abis/erc20.json'
+import wethArtifact from '../abis/weth.json'
+
+*/
+
 // Config: Import your network config here
 import config from '../config.json'
 
@@ -50,6 +58,10 @@ import {
 } from '../store/interactions'
 
 function App() {
+
+  const routerArtifact = require('@uniswap/v2-periphery/build/UniswapV2Router02.json')
+  const erc20Abi = require('../abis/erc20.json')
+  const wethAbi = require('../abis/weth.json')
 
   // Set Token Addresses
     const [usd, setUSD] = useState(null)
@@ -107,10 +119,6 @@ function App() {
     const [dappBalance, setDappBalance] = useState(0)
     const [appleBalance2, setAppleBalance2] = useState(0)
 
-    const routerArtifact = require('@uniswap/v2-periphery/build/UniswapV2Router02.json')
-    const erc20Abi = require('../abis/erc20.json')
-    const wethArtifact = require('../abis/weth.json')
-
     const dispatch = useDispatch()
 
   const loadBlockchainData = async () => {
@@ -159,7 +167,7 @@ function App() {
       let dai = new ethers.Contract(config[1].dai.address, erc20Abi, provider)
       setDAI(dai)
 
-      let weth = new ethers.Contract(config[1].weth.address, wethArtifact.abi, provider)
+      let weth = new ethers.Contract(config[1].weth.address, wethAbi, provider)
       setWETH(weth)
    
     // Load APPL Balance Individually
@@ -200,7 +208,7 @@ function App() {
       setDaiWethUniswap(daiWethUniswap)
 
     // Load UniswapV2 Router Address
-      const router = new ethers.Contract(routerAddress, routerArtifact.abi, provider)
+      const router = new ethers.Contract('0x7a250d5630b4cf539739df2c5dacb4c659f2488d', routerArtifact.abi, provider)
       setRouter(router)
 
     // Load Balances for DAPP / USD
