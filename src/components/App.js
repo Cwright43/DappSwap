@@ -38,14 +38,6 @@ import daiIcon from '../DAI.png'
 import AMM_ABI from '../abis/AMM.json'
 import TOKEN_ABI from '../abis/Token.json'
 
-/*
-
-import routerArtifact from '@uniswap/v2-periphery/build/UniswapV2Router02.json'
-import erc20Abi from '../abis/erc20.json'
-import wethArtifact from '../abis/weth.json'
-
-*/
-
 // Config: Import your network config here
 import config from '../config.json'
 
@@ -59,9 +51,9 @@ import {
 
 function App() {
 
-  const routerArtifact = require('@uniswap/v2-periphery/build/UniswapV2Router02.json')
-  const erc20Abi = require('../abis/erc20.json')
-  const wethAbi = require('../abis/weth.json')
+    const routerArtifact = require('@uniswap/v2-periphery/build/UniswapV2Router02.json')
+    const erc20Abi = require('../abis/erc20.json')
+    const wethAbi = require('../abis/weth.json')
 
   // Set Token Addresses
     const [usd, setUSD] = useState(null)
@@ -71,7 +63,6 @@ function App() {
     const [weth, setWETH] = useState(null)
     const [wallet, setWallet] = useState(null)
     const [daiWethUniswap, setDaiWethUniswap] = useState(null)
-    const [routerAddress, setRouterAddress] = useState(null)
     const [router, setRouter] = useState(null)
 
   // Set rate values for each trading pair
@@ -97,6 +88,7 @@ function App() {
     const poolDAI = useSelector(state => state.amm.poolDAI)
     const poolWETH = useSelector(state => state.amm.poolWETH)
 
+  // Assign Active User Account and Signer
     const [account, setAccount] = useState(null)
     const [signer, setSigner] = useState(null)
 
@@ -150,11 +142,11 @@ function App() {
         await loadAccount(dispatch)
       })
 
-    // Initiate contracts
+    // Initiate Contracts
       await loadTokens(provider, chainId, dispatch)
       await loadAMM(provider, chainId, dispatch)
 
-    // Load tokens
+    // Load Token Addresses
       let usd = new ethers.Contract(config[1].usd.address, TOKEN_ABI, provider)
       setUSD(usd)
 
@@ -170,7 +162,7 @@ function App() {
       let weth = new ethers.Contract(config[1].weth.address, wethAbi, provider)
       setWETH(weth)
    
-    // Load APPL Balance Individually
+    // Load Token Account Balances Individually
       let dappAccountBalance = await dapp.balanceOf(accounts[0])
       dappAccountBalance = ethers.utils.formatUnits(dappAccountBalance, 18)
       setDappAccountBalance(dappAccountBalance)
@@ -238,6 +230,7 @@ function App() {
       appleBalance2 = ethers.utils.formatUnits(appleBalance2, 18)
       setAppleBalance2(appleBalance2)
 
+    // Assign Dynamic Rate Values for Each Pair
       setRate1((balance2 / balance1))
       setRate2((usdBalance / appleBalance))
       setRate3((appleBalance2 / dappBalance))
@@ -257,14 +250,14 @@ function App() {
       width: '100vw',
       height: '100vh'
       }}>
-    <Container>
-      <HashRouter>
-         <style>{'body { background-color: blue; }'}</style>
-        <Navigation  />
-        <>
+  <Container>
+    <HashRouter>
+        <style>{'body { background-color: blue; }'}</style>
+      <Navigation  />
+    <>
   <Row>
-  <h4 className="text-center">Total DAI: {parseFloat(poolDAI).toFixed(2)}</h4>
-  <h4 className="text-center">Total WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
+      <h4 className="text-center">Total DAI: {parseFloat(poolDAI).toFixed(2)}</h4>
+      <h4 className="text-center">Total WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
     <Col>
       <Button
         onClick={() => setOpen1(!open1)}
@@ -426,12 +419,12 @@ function App() {
         </Collapse>
       </div>
     </Col>
-    </Row>
+  </Row>
     </>
         <hr />
-       <Tabs />
-        <Routes>
-          <Route exact path="/" element={<Swap
+      <Tabs />
+      <Routes>
+        <Route exact path="/" element={<Swap
                                           dappAccountBalance={dappAccountBalance}
                                           usdAccountBalance={usdAccountBalance}
                                           appleAccountBalance={appleAccountBalance}
@@ -440,19 +433,15 @@ function App() {
                                           dai={dai}
                                           weth={weth}
                                           daiWethUniswap={daiWethUniswap}
-                                          signer={signer}
-                                          router={router}
-                                          rate1={rate1}
-                                          rate2={rate2}
-                                          rate3={rate3}
                                           />} />
-          <Route path="/deposit" element={<Deposit />} />
-          <Route path="/withdraw" element={<Withdraw />} />
-          <Route path="/charts" element={<Charts />} />
-        </Routes>
-      </HashRouter>
-    </Container>
-  </div>
+        <Route path="/deposit" element={<Deposit />} />
+        <Route path="/withdraw" element={<Withdraw />} />
+        <Route path="/charts" element={<Charts />} />
+      </Routes>
+    </HashRouter>
+  </Container>
+</div>
+
   )
 }
 

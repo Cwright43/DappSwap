@@ -35,6 +35,10 @@ import TOKEN_ABI from '../abis/Token.json';
 import AMM_ABI from '../abis/AMM.json';
 import config from '../config.json';
 
+// --------------------------------------//
+//    Load Provider, Network, Account    //
+// --------------------------------------//
+
 export const loadProvider = (dispatch) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum)
   dispatch(setProvider(provider))
@@ -108,6 +112,7 @@ export const loadAMM = async (provider, chainId, dispatch) => {
   dispatch(setContract(amm))
   return amm
 }
+
 // Load (APPL / USD) Address
 export const loadDappAppleUSD = async (provider, chainId, dispatch) => {
   const amm = new ethers.Contract(config[chainId].dappAppleUSD.address, AMM_ABI, provider)
@@ -136,11 +141,12 @@ export const loadUniswap = async (provider, chainId, dispatch) => {
 //        Load Balances and Shares       //
 // --------------------------------------//
 
+// Load Account Balances for Active Tokens, DAI, and WETH
+
 export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const balance1 = await tokens[0].balanceOf(account)
   const balance2 = await tokens[1].balanceOf(account)
-
-  dispatch(balancesLoaded([
+    dispatch(balancesLoaded([
     ethers.utils.formatUnits(balance1.toString(), 'ether'),
     ethers.utils.formatUnits(balance2.toString(), 'ether')
   ]))
@@ -160,6 +166,10 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const poolWETH = await _amm.poolWETHbalance()
   dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
 }
+
+// --------------------------------------//
+//         Add / Remove Liquidity        //
+// --------------------------------------//
 
 // Add Liquidity
 export const addLiquidity = async (provider, amm, tokens, amounts, dispatch) => {
@@ -201,6 +211,10 @@ export const removeLiquidity = async (provider, amm, shares, dispatch) => {
   }
 }
 
+// --------------------------------------//
+//              Manage Swaps             //
+// --------------------------------------//
+
 // Swap Functionality
 export const swap = async (provider, amm, token1, token2, inputSymbol, outputSymbol, amount, dispatch) => {
   try {
@@ -210,34 +224,21 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
     let transaction
     const signer = await provider.getSigner()
 
-
   if ((inputSymbol === "DAPP") || (inputSymbol === "USD") || (inputSymbol === "APPL")
        || (outputSymbol === "DAPP") || (outputSymbol === "USD") || (outputSymbol === "APPL")) {
     transaction = await token1.connect(signer).approve(amm.address, amount)
     await transaction.wait()
-  } else if ((inputSymbol === "DAI") && (outputSymbol === "WETH")) {
-    console.log(`Test A`)
-    // transaction = await amm.connect(signer).daiApprove(amount)
-    // transaction = await amm.connect(signer).wethApprove(amount)
-    transaction = await token1.connect(signer).approve(amm.address, amount)
-    transaction = await token2.connect(signer).approve(amm.address, amount)
-    await transaction.wait()
-  } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
-    console.log(`${amount}`)
-    console.log(`Test B`)
-    // transaction = await amm.connect(signer).daiApprove(amount)
-    // transaction = await amm.connect(signer).wethApprove(amount)
-    transaction = await token1.connect(signer).approve(amm.address, amount)
-    transaction = await token2.connect(signer).approve(amm.address, amount)
-    await transaction.wait()
-  }
 
+  } else if ((inputSymbol === "DAI") && (outputSymbol === "WETH") || (inputSymbol === "WETH") && (outputSymbol === "DAI")) {
+    transaction = await token1.connect(signer).approve(amm.address, amount)
+    transaction = await token2.connect(signer).approve(amm.address, amount)
+    await transaction.wait()
+    
+  } 
 
     if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
-      console.log(`Test 2`)
       transaction = await amm.connect(signer).uniswap1(amount)
     } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
-      console.log(`Test 3`)
       // transaction = await amm.connect(signer).uniswap2(amount)
     } else if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await amm.connect(signer).swapToken1(amount)
@@ -245,19 +246,11 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
       transaction = await amm.connect(signer).swapToken2(amount)
     }
 
-    /*
-
-    await transaction.wait()
-    
     dispatch(swapSuccess(transaction.hash))
-
-      */
 
   } catch (error) {
     dispatch(swapFail())
   }
-
-
 }
 
 // Load All Swaps
