@@ -231,9 +231,8 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
 
   } else if ((inputSymbol === "DAI") && (outputSymbol === "WETH") || (inputSymbol === "WETH") && (outputSymbol === "DAI")) {
     transaction = await token1.connect(signer).approve(amm.address, amount)
-    transaction = await token2.connect(signer).approve(amm.address, amount)
     await transaction.wait()
-    
+
   } 
 
     if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
