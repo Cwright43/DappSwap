@@ -250,8 +250,8 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
               <div className='d-flex justify-content-between'>
                 <Form.Label><strong>Output:</strong></Form.Label>
                 <Form.Text muted>
-                  Balance: {
-                    (outputToken) === 'DAPP' ? (
+                Balance: {
+                  outputToken === 'DAPP' ? (
                       parseFloat(dappAccountBalance).toFixed(2)
                     ) : outputToken === 'USD' ? (
                       parseFloat(usdAccountBalance).toFixed(2)

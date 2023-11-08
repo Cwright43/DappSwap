@@ -61,7 +61,6 @@ function App() {
     const [apple, setApple] = useState(null)
     const [dai, setDAI] = useState(null)
     const [weth, setWETH] = useState(null)
-    const [wallet, setWallet] = useState(null)
     const [daiWethUniswap, setDaiWethUniswap] = useState(null)
     const [router, setRouter] = useState(null)
 
@@ -91,12 +90,13 @@ function App() {
   // Assign Active User Account and Signer
     const [account, setAccount] = useState(null)
     const [signer, setSigner] = useState(null)
+    const [wallet, setWallet] = useState(null)
 
   // Set Balances for DAPP / USD
     const [balance1, setBalance1] = useState(0)
     const [balance2, setBalance2] = useState(0)
 
-  // Load Account APPL Balance Individually
+  // Load Account Balance Individually
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
     const [usdAccountBalance, setUSDAccountBalance] = useState(0)
     const [appleAccountBalance, setAppleAccountBalance] = useState(0)
@@ -195,7 +195,7 @@ function App() {
       const dappDappApple = new ethers.Contract(config[1].dappDappApple.address, AMM_ABI, provider)
       setDappDappApple(dappDappApple)
 
-    // Load Dapp DAPP / APPL Pool Address
+    // Load Dapp DAI / WETH Pool Address
       const daiWethUniswap = new ethers.Contract(config[1].daiWethUniswap.address, AMM_ABI, provider)
       setDaiWethUniswap(daiWethUniswap)
 

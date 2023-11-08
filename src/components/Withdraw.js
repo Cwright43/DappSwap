@@ -7,7 +7,6 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 import { ethers } from 'ethers';
-import { NumericFormat } from 'react-number-format';
 
 import Alert from './Alert'
 
@@ -93,7 +92,7 @@ const Withdraw = () => {
 
             <Row>
               <p><strong>DAPP Balance:</strong> {parseFloat(balances[0]).toFixed(2)}</p>
-              <p><strong>USD Balance:</strong> {parseFloat(balances[0]).toFixed(2)}</p>
+              <p><strong>USD Balance:</strong> {parseFloat(balances[1]).toFixed(2)}</p>
             </Row>
 
           </Form>

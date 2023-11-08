@@ -15,12 +15,9 @@ import {
 
 const Charts = () => {
   const provider = useSelector(state => state.provider.connection)
-
   const tokens = useSelector(state => state.tokens.contracts)
   const symbols = useSelector(state => state.tokens.symbols)
-
   const amm = useSelector(state => state.amm.contract)
-
   const chart = useSelector(chartSelector)
 
   const dispatch = useDispatch()
