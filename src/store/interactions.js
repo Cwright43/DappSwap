@@ -237,7 +237,10 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
     */
     transaction = await token1.connect(signer).approve(amm.address, amount)
     await transaction.wait()
-    debugger
+
+    transaction = await token2.connect(signer).approve(amm.address, amount)
+    await transaction.wait()
+
   if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
       transaction = await amm.connect(signer).uniswap1(amount)
     } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {

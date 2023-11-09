@@ -17,6 +17,8 @@ interface IWETH is IERC20 {
 
     function balanceOf(address account) external view returns (uint256);
 
+    function approve(address spender, uint amount) external returns (bool);
+
 }
 
 interface IUniswapV2ERC20 {
@@ -316,7 +318,7 @@ contract AMM {
         returns(uint256 token1Amount)
         {
             // Calculate Token 1 Amount
-            token1Amount = calculateWethSwap(_token2Amount);
+            // token1Amount = calculateWethSwap(_token2Amount);
 
             // Use the money here!
             address[] memory path = new address[](2);
@@ -328,6 +330,8 @@ contract AMM {
             IUniswapV2ERC20(wethAddress).transferFrom(msg.sender, address(this), _token2Amount);
 
             _swapOnUniswap(path, _token2Amount, 0);
+
+            token1Amount = IERC20(daiAddress).balanceOf(address(this));
 
             poolWETHbalance += _token2Amount;
             poolDAIbalance -= token1Amount;
