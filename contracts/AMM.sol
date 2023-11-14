@@ -28,36 +28,34 @@ interface IUniswapV2ERC20 {
     function transferFrom(address from, address to, uint value) external returns (bool);
 }
 
-interface IUniswapV2Pair {
-
-    function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external;
-
-    function approve(address spender, uint value) external returns (bool);
-
-}
-
 contract AMM {
     Token public token1;
     Token public token2;
 
     IWETH public dai;
     IWETH public weth;
-    uint256 public poolDAIbalance;
-    uint256 public poolWETHbalance;
 
     address public owner;
 
     address public constant wethAddress = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant daiAddress = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
     address public constant daiWETHpool = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
+    address public constant wethDAIpool = 0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11;
     address public constant uniswapV2Router = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
     IUniswapV2Router02 public immutable uRouter;
 
     uint256 public token1Balance;
     uint256 public token2Balance;
+
+    uint256 public pool1daiBalance;
+    uint256 public pool1wethBalance;
+    uint256 public pool2daiBalance;
+    uint256 public pool2wethBalance;
+
     uint256 public K;
     uint256 public K1;
+    uint256 public K2;
 
     uint256 public listCount;
 
@@ -82,16 +80,14 @@ contract AMM {
         token1 = _token1;
         token2 = _token2;
         listCount = 0;
-        poolDAIbalance = IWETH(daiAddress).balanceOf(daiWETHpool);
-        poolWETHbalance = IWETH(wethAddress).balanceOf(daiWETHpool);
-        K1 = poolDAIbalance * poolWETHbalance;
+        pool1daiBalance = IWETH(daiAddress).balanceOf(daiWETHpool);
+        pool1wethBalance = IWETH(wethAddress).balanceOf(daiWETHpool);
+        pool2daiBalance = IWETH(daiAddress).balanceOf(wethDAIpool);
+        pool2wethBalance = IWETH(wethAddress).balanceOf(wethDAIpool);
+        K1 = pool1daiBalance * pool1wethBalance;
+        K2 = pool2daiBalance * pool2wethBalance;
         owner = msg.sender;
         uRouter = IUniswapV2Router02(uniswapV2Router);
-    }
-
-    function addDEXList(address _newDEX) public {
-        dexlist[listCount] = _newDEX;
-        listCount++;
     }
 
     function addLiquidity(uint256 _token1Amount, uint256 _token2Amount) external {
@@ -131,6 +127,42 @@ contract AMM {
         shares[msg.sender] += share;
     }
 
+    // Calculate Token 2 Output for Intended Token 1 Swap
+    function calculateToken1Swap(uint256 _token1Amount)
+        public
+        view
+        returns (uint256 token2Amount)
+        {
+            uint256 token1After = token1Balance + _token1Amount;
+            uint256 token2After = K / token1After;
+            token2Amount = token2Balance - token2After;
+
+            // Don't let the pool go to 0
+            if (token2Amount == token2Balance) {
+                token2Amount--;
+            }
+
+            require(token2Amount < token2Balance, "swap amount too large");
+    }
+
+    // Calculate Token 1 Output for Intended Token 2 Swap
+    function calculateToken2Swap(uint256 _token2Amount)
+        public
+        view
+        returns (uint256 token1Amount)
+        {
+            uint256 token2After = token2Balance + _token2Amount;
+            uint256 token1After = K / token2After;
+            token1Amount = token1Balance - token1After;
+
+            // Don't let the pool go to 0
+            if (token1Amount == token1Balance) {
+                token1Amount--;
+            }
+
+            require(token1Amount < token1Balance, "swap amount too large");
+    }
+
     // Calculate Token 2 Deposit Requirement When Inputting Token 1
     function calculateToken2Deposit(uint256 _token1Amount)
             public
@@ -149,76 +181,40 @@ contract AMM {
         token1Amount = (token1Balance * _token2Amount) / token2Balance;
     }
 
-    // Calculate Token 2 Output for Intended Token 1 Trade
-    function calculateToken1Swap(uint256 _token1Amount)
-        public
-        view
-        returns (uint256 token2Amount)
-        {
-            uint256 token1After = token1Balance + _token1Amount;
-            uint256 token2After = K / token1After;
-            token2Amount = token2Balance - token2After;
-
-            // Don't let the pool go to 0
-            if (token2Amount == token2Balance) {
-                token2Amount--;
-            }
-
-            require(token2Amount < token2Balance, "swap amount too large");
-    }
-
-    // Calculate Token 1 Output for Intended Token 2 Trade
-    function calculateToken2Swap(uint256 _token2Amount)
-        public
-        view
-        returns (uint256 token1Amount)
-        {
-            uint256 token2After = token2Balance + _token2Amount;
-            uint256 token1After = K / token2After;
-            token1Amount = token1Balance - token1After;
-
-            // Don't let the pool go to 0
-            if (token1Amount == token1Balance) {
-                token1Amount--;
-            }
-
-            require(token1Amount < token1Balance, "swap amount too large");
-    }
-
-    // Calculate WETH Output for Intended DAI Trade
+    // Calculate WETH Output for Intended DAI Trade on DAI / WETH Pool
     function calculateDaiSwap(uint256 _token1Amount)
         public
         view
         returns (uint256 token2Amount)
         {
-            uint256 token1After = poolDAIbalance + _token1Amount;
+            uint256 token1After = pool1daiBalance + _token1Amount;
             uint256 token2After = K1 / token1After;
-            token2Amount = poolWETHbalance - token2After;
+            token2Amount = pool1wethBalance - token2After;
 
             // Don't let the pool go to 0
-            if (token2Amount == poolWETHbalance) {
+            if (token2Amount == pool1wethBalance) {
                 token2Amount--;
             }
 
-            require(token2Amount < poolWETHbalance, "swap amount too large");
+            require(token2Amount < pool1wethBalance, "swap amount too large");
     }
 
-    // Calculate DAI Output for Intended WETH Trade
+    // Calculate DAI Output for Intended WETH Trade on WETH / DAI Pool
     function calculateWethSwap(uint256 _token2Amount)
         public
         view
         returns (uint256 token1Amount)
         {
-            uint256 token2After = poolWETHbalance + _token2Amount;
-            uint256 token1After = K1 / token2After;
-            token1Amount = poolDAIbalance - token1After;
+            uint256 token2After = pool2wethBalance + _token2Amount;
+            uint256 token1After = K2 / token2After;
+            token1Amount = pool2daiBalance - token1After;
 
             // Don't let the pool go to 0
-            if (token1Amount == poolDAIbalance) {
+            if (token1Amount == pool2daiBalance) {
                 token1Amount--;
             }
 
-            require(token1Amount < poolDAIbalance, "swap amount too large");
+            require(token1Amount < pool2daiBalance, "swap amount too large");
     }
 
     // Enact Token 1 Swap for Fictitious Token Pair
@@ -275,13 +271,11 @@ contract AMM {
             );
     }
 
-    // Enact DAI / WETH Swap on Testnet Using DAI
+    // Enact DAI / WETH Swap on Testnet
     function uniswap1(uint256 _token1Amount)
         external
         returns(uint256 token2Amount)
         {
-            // Calculate Token 2 Amount
-            token2Amount = calculateDaiSwap(_token1Amount);
 
             // Use the money here!
             address[] memory path = new address[](2);
@@ -294,8 +288,10 @@ contract AMM {
 
             _swapOnUniswap(path, _token1Amount, 0);
 
-            poolDAIbalance += _token1Amount;
-            poolWETHbalance -= token2Amount;
+            token2Amount = IERC20(wethAddress).balanceOf(address(this));
+
+            pool1daiBalance += _token1Amount;
+            pool1wethBalance -= token2Amount;
 
             IUniswapV2ERC20(wethAddress).transfer(msg.sender, token2Amount);
 
@@ -306,19 +302,17 @@ contract AMM {
                 _token1Amount,
                 address(wethAddress),
                 token2Amount,
-                poolDAIbalance,
-                poolWETHbalance,
+                pool1daiBalance,
+                pool1wethBalance,
                 block.timestamp
             );
     }
 
-    // Enact DAI / WETH Swap on Testnet Using WETH
+    // Enact WETH / DAI Swap on Testnet
     function uniswap2(uint256 _token2Amount)
         external
         returns(uint256 token1Amount)
         {
-            // Calculate Token 1 Amount
-            // token1Amount = calculateWethSwap(_token2Amount);
 
             // Use the money here!
             address[] memory path = new address[](2);
@@ -333,8 +327,8 @@ contract AMM {
 
             token1Amount = IERC20(daiAddress).balanceOf(address(this));
 
-            poolWETHbalance += _token2Amount;
-            poolDAIbalance -= token1Amount;
+            pool2wethBalance += _token2Amount;
+            pool2daiBalance -= token1Amount;
 
             IUniswapV2ERC20(daiAddress).transfer(msg.sender, token1Amount);
             
@@ -345,8 +339,8 @@ contract AMM {
                 _token2Amount,
                 address(daiAddress),
                 token1Amount,
-                poolDAIbalance,
-                poolWETHbalance,
+                pool2daiBalance,
+                pool2wethBalance,
                 block.timestamp
             );
     }

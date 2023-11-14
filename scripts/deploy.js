@@ -32,6 +32,8 @@ async function main() {
   // Deploy DAPP / USD liquidity pools
   const amm = await AMM.deploy(dapp.address, usd.address)
   const appleswap = await AMM.deploy(dapp.address, usd.address)
+  
+  // COME BACK - No need for this
   const aggregator = await Aggregator.deploy(dapp.address, usd.address)
 
   // Deploy APPL / USD liquidity pools

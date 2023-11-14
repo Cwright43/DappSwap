@@ -86,6 +86,8 @@ function App() {
   // Load DAI/WETH Balances from Mainnet
     const poolDAI = useSelector(state => state.amm.poolDAI)
     const poolWETH = useSelector(state => state.amm.poolWETH)
+    const poolDAI1 = useSelector(state => state.amm.poolDAI1)
+    const poolWETH1 = useSelector(state => state.amm.poolWETH1)
 
   // Assign Active User Account and Signer
     const [account, setAccount] = useState(null)
@@ -256,8 +258,10 @@ function App() {
       <Navigation  />
     <>
   <Row>
-      <h4 className="text-center">Total DAI: {parseFloat(poolDAI).toFixed(2)}</h4>
-      <h4 className="text-center">Total WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
+      <h4 className="text-center">Total DAI in DAI/WETH: {parseFloat(poolDAI).toFixed(2)}</h4>
+      <h4 className="text-center">Total WETH in DAI/WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
+      <h4 className="text-center">Total DAI in WETH/DAI: {parseFloat(poolDAI1).toFixed(2)}</h4>
+      <h4 className="text-center">Total WETH in WETH/DAI: {parseFloat(poolWETH1).toFixed(2)}</h4>
     <Col>
       <Button
         onClick={() => setOpen1(!open1)}
@@ -430,9 +434,6 @@ function App() {
                                           appleAccountBalance={appleAccountBalance}
                                           daiAccountBalance={daiAccountBalance}
                                           wethAccountBalance={wethAccountBalance}
-                                          dai={dai}
-                                          weth={weth}
-                                          daiWethUniswap={daiWethUniswap}
                                           />} />
         <Route path="/deposit" element={<Deposit />} />
         <Route path="/withdraw" element={<Withdraw />} />

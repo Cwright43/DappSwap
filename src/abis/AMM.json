@@ -97,16 +97,16 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "K2",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "_newDEX",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "addDEXList",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -351,7 +351,7 @@
   },
   {
     "inputs": [],
-    "name": "poolDAIbalance",
+    "name": "pool1daiBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -364,7 +364,33 @@
   },
   {
     "inputs": [],
-    "name": "poolWETHbalance",
+    "name": "pool1wethBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pool2daiBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pool2wethBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -601,6 +627,19 @@
   {
     "inputs": [],
     "name": "wethAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "wethDAIpool",
     "outputs": [
       {
         "internalType": "address",

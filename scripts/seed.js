@@ -194,6 +194,8 @@ async function main() {
 
   // Add DEX addresses to mapping list
 
+  /*
+
   transaction = await aggregator.addDEXList(amm.address)
   await transaction.wait()
 
@@ -216,6 +218,8 @@ async function main() {
   await transaction.wait()
 
   console.log(`AppleSwap @ ${appleswap.address} added to DEX mapping...\n`)
+
+  */
 
   /////////////////////////////////////////////////////////////
   // Investor 1 Swaps: Dapp --> USD
