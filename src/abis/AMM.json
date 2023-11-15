@@ -131,25 +131,6 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_token1Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "calculateDaiSwap",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
         "name": "_token2Amount",
         "type": "uint256"
       }
@@ -226,25 +207,6 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "calculateWethSwap",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token1Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
         "name": "_share",
         "type": "uint256"
       }
@@ -299,38 +261,6 @@
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "dexlist",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "listCount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -558,44 +488,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_token1Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "uniswap1",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "uniswap2",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token1Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

@@ -26,6 +26,9 @@ export const amm = createSlice({
     setContract: (state, action) => {
       state.contract = action.payload
     },
+    setAggregator: (state, action) => {
+      state.aggregator = action.payload
+    },
     sharesLoaded: (state, action) => {
       state.shares = action.payload
     },
@@ -100,6 +103,7 @@ export const amm = createSlice({
 
 export const {
   setContract,
+  setAggregator,
   sharesLoaded,
   token1Loaded,
   token2Loaded,

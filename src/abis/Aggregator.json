@@ -1,17 +1,6 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "contract Token",
-        "name": "_token1",
-        "type": "address"
-      },
-      {
-        "internalType": "contract Token",
-        "name": "_token2",
-        "type": "address"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -84,187 +73,12 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_newDEX",
-        "type": "address"
-      }
-    ],
-    "name": "addDEXList",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_token1Amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "addLiquidity",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "calculateToken1Deposit",
+    "inputs": [],
+    "name": "K1",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token1Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_token1Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "calculateToken1Swap",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_token1Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "calculateToken2Deposit",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "calculateToken2Swap",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token1Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_share",
-        "type": "uint256"
-      }
-    ],
-    "name": "calculateWithdrawAmount",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token1Amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "token2Amount",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
       {
         "internalType": "uint256",
         "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "dexlist",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_dexListing",
-        "type": "uint256"
-      }
-    ],
-    "name": "fetchT1Balance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "dexToken1Balance",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_dexListing",
-        "type": "uint256"
-      }
-    ],
-    "name": "fetchT2Balance",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "dexToken2Balance",
         "type": "uint256"
       }
     ],
@@ -273,7 +87,7 @@
   },
   {
     "inputs": [],
-    "name": "listCount",
+    "name": "K2",
     "outputs": [
       {
         "internalType": "uint256",
@@ -288,24 +102,142 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_share",
+        "name": "_token1Amount",
         "type": "uint256"
       }
     ],
-    "name": "removeLiquidity",
+    "name": "calculateDaiSwap",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "token1Amount",
-        "type": "uint256"
-      },
       {
         "internalType": "uint256",
         "name": "token2Amount",
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_token2Amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "calculateWethSwap",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "token1Amount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "dai",
+    "outputs": [
+      {
+        "internalType": "contract IWETH",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "daiAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "daiWETHpool",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pool1daiBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pool1wethBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pool2daiBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pool2wethBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -328,6 +260,32 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "totalShares",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "uRouter",
+    "outputs": [
+      {
+        "internalType": "contract IUniswapV2Router02",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -335,7 +293,7 @@
         "type": "uint256"
       }
     ],
-    "name": "swapToken1",
+    "name": "uniswap1",
     "outputs": [
       {
         "internalType": "uint256",
@@ -354,7 +312,7 @@
         "type": "uint256"
       }
     ],
-    "name": "swapToken2",
+    "name": "uniswap2",
     "outputs": [
       {
         "internalType": "uint256",
@@ -367,10 +325,10 @@
   },
   {
     "inputs": [],
-    "name": "token1",
+    "name": "uniswapV2Router",
     "outputs": [
       {
-        "internalType": "contract Token",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -380,23 +338,10 @@
   },
   {
     "inputs": [],
-    "name": "token1Balance",
+    "name": "weth",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "token2",
-    "outputs": [
-      {
-        "internalType": "contract Token",
+        "internalType": "contract IWETH",
         "name": "",
         "type": "address"
       }
@@ -406,12 +351,12 @@
   },
   {
     "inputs": [],
-    "name": "token2Balance",
+    "name": "wethAddress",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -419,12 +364,12 @@
   },
   {
     "inputs": [],
-    "name": "totalShares",
+    "name": "wethDAIpool",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",

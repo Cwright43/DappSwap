@@ -6,11 +6,16 @@ import Blockies from 'react-blockies'
 
 import logo from '../logo.png';
 
-import { loadAccount, loadBalances } from '../store/interactions'
+import { loadProvider,
+         loadAccount, 
+         loadBalances,
+         loadDaiWethBalances,
+         loadAggregator,
+        } from '../store/interactions'
 
 import config from '../config.json'
 
-const Navigation = () => {
+const Navigation = ({ provider }) => {
   const chainId = useSelector(state => state.provider.chainId)
   const account = useSelector(state => state.provider.account)
   const tokens = useSelector(state => state.tokens.contracts)
@@ -19,8 +24,11 @@ const Navigation = () => {
   const dispatch = useDispatch()
 
   const connectHandler = async () => {
+    const provider = await loadProvider(dispatch)
     const account = await loadAccount(dispatch)
+    await loadAggregator(provider, chainId, dispatch)
     await loadBalances(amm, tokens, account, dispatch)
+    await loadDaiWethBalances(amm, dispatch)
   }
 
   const networkHandler = async (e) => {

@@ -80,12 +80,12 @@ async function main() {
   console.log(`Fetching AppleSwap...\n`)
 
   // Fetch AMM
-  const amm = await ethers.getContractAt('AMM', config[chainId].amm.address)
-  console.log(`AMM Swap fetched: ${amm.address}\n`)
+  const dappDappUSD = await ethers.getContractAt('AMM', config[chainId].dappDappUSD.address)
+  console.log(`AMM Swap fetched: ${dappDappUSD.address}\n`)
 
   // Fetch AppleSwap
-  const appleswap = await ethers.getContractAt('AMM', config[chainId].appleswap.address)
-  console.log(`AppleSwap fetched: ${appleswap.address}\n`)
+  const appleDappUSD = await ethers.getContractAt('AMM', config[chainId].appleDappUSD.address)
+  console.log(`AppleSwap fetched: ${appleDappUSD.address}\n`)
 
   // Fetch Aggregator
   const aggregator = await ethers.getContractAt('AMM', config[chainId].aggregator.address)
@@ -107,41 +107,29 @@ async function main() {
   const appleDappApple = await ethers.getContractAt('AMM', config[chainId].appleDappApple.address)
   console.log(`DAPP / APPL Pool on Apple Swap fetched: ${appleDappApple.address}\n`)
 
-  // Add liquidity to Aggregator
-
-  transaction = await dapp.connect(deployer).approve(aggregator.address, amount1)
-  await transaction.wait()
-
-  transaction = await usd.connect(deployer).approve(aggregator.address, amount1)
-  await transaction.wait()
-
-  console.log(`Adding liquidity...\n`)
-  transaction = await aggregator.connect(deployer).addLiquidity(amount1, amount1)
-  await transaction.wait()
-
 
   // Add liquidity to DAPP / USD on Dapp Swap
 
-  transaction = await dapp.connect(deployer).approve(amm.address, amount)
+  transaction = await dapp.connect(deployer).approve(dappDappUSD.address, amount)
   await transaction.wait()
 
-  transaction = await usd.connect(deployer).approve(amm.address, amount)
+  transaction = await usd.connect(deployer).approve(dappDappUSD.address, amount)
   await transaction.wait()
 
   console.log(`Adding liquidity...\n`)
-  transaction = await amm.connect(deployer).addLiquidity(amount, amount)
+  transaction = await dappDappUSD.connect(deployer).addLiquidity(amount, amount)
   await transaction.wait()
 
   // Add liquidity to DAPP / USD on Apple Swap
 
-  transaction = await dapp.connect(deployer).approve(appleswap.address, amount1)
+  transaction = await dapp.connect(deployer).approve(appleDappUSD.address, amount1)
   await transaction.wait()
 
-  transaction = await usd.connect(deployer).approve(appleswap.address, amount1)
+  transaction = await usd.connect(deployer).approve(appleDappUSD.address, amount1)
   await transaction.wait()
 
   console.log(`Adding liquidity...\n`)
-  transaction = await appleswap.connect(deployer).addLiquidity(amount1, amount1)
+  transaction = await appleDappUSD.connect(deployer).addLiquidity(amount1, amount1)
   await transaction.wait()
 
    // Add liquidity to APPL / USD on Dapp Swap
@@ -192,34 +180,6 @@ async function main() {
     transaction = await appleDappApple.connect(deployer).addLiquidity(amount5, amount5)
     await transaction.wait()
 
-  // Add DEX addresses to mapping list
-
-  /*
-
-  transaction = await aggregator.addDEXList(amm.address)
-  await transaction.wait()
-
-  console.log(`DappSwap @ ${amm.address} added to DEX mapping...\n`)
-
-  transaction = await aggregator.addDEXList(appleswap.address)
-  await transaction.wait()
-
-  console.log(`AppleSwap @ ${appleswap.address} added to DEX mapping...\n`)
-
-
-  // Add DEX addresses to mapping list
-
-  transaction = await amm.addDEXList(amm.address)
-  await transaction.wait()
-
-  console.log(`DappSwap @ ${amm.address} added to DEX mapping...\n`)
-
-  transaction = await amm.addDEXList(appleswap.address)
-  await transaction.wait()
-
-  console.log(`AppleSwap @ ${appleswap.address} added to DEX mapping...\n`)
-
-  */
 
   /////////////////////////////////////////////////////////////
   // Investor 1 Swaps: Dapp --> USD
@@ -228,11 +188,11 @@ async function main() {
   console.log(`Investor 1 Swaps...\n`)
 
   // Investor approves all tokens
-  transaction = await dapp.connect(investor1).approve(amm.address, tokens(10))
+  transaction = await dapp.connect(investor1).approve(dappDappUSD.address, tokens(10))
   await transaction.wait()
 
   // Investor swaps 1 token
-  transaction = await amm.connect(investor1).swapToken1(tokens(10))
+  transaction = await dappDappUSD.connect(investor1).swapToken1(tokens(10))
   await transaction.wait()
 
   /////////////////////////////////////////////////////////////
@@ -241,11 +201,11 @@ async function main() {
 
   console.log(`Investor 2 Swaps...\n`)
   // Investor approves all tokens tokens
-  transaction = await usd.connect(investor2).approve(amm.address, tokens(10))
+  transaction = await usd.connect(investor2).approve(dappDappUSD.address, tokens(10))
   await transaction.wait()
 
   // Investor swaps 1 token
-  transaction = await amm.connect(investor2).swapToken2(tokens(10))
+  transaction = await dappDappUSD.connect(investor2).swapToken2(tokens(10))
   await transaction.wait()
 
 
@@ -256,11 +216,11 @@ async function main() {
   console.log(`Investor 3 Swaps...\n`)
 
   // Investor approves all tokens
-  transaction = await dapp.connect(investor3).approve(amm.address, tokens(10))
+  transaction = await dapp.connect(investor3).approve(dappDappUSD.address, tokens(10))
   await transaction.wait()
 
   // Investor swaps all 10 token
-  transaction = await amm.connect(investor3).swapToken1(tokens(10))
+  transaction = await dappDappUSD.connect(investor3).swapToken1(tokens(10))
   await transaction.wait()
 
   /////////////////////////////////////////////////////////////
@@ -270,11 +230,11 @@ async function main() {
   console.log(`Investor 4 Swaps...\n`)
 
   // Investor approves all tokens
-  transaction = await usd.connect(investor4).approve(amm.address, tokens(10))
+  transaction = await usd.connect(investor4).approve(dappDappUSD.address, tokens(10))
   await transaction.wait()
 
   // Investor swaps all 10 tokens
-  transaction = await amm.connect(investor4).swapToken2(tokens(10))
+  transaction = await dappDappUSD.connect(investor4).swapToken2(tokens(10))
   await transaction.wait()
 
   console.log(`Finished.\n`)

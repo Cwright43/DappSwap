@@ -57,13 +57,9 @@ contract AMM {
     uint256 public K1;
     uint256 public K2;
 
-    uint256 public listCount;
-
     uint256 public totalShares;
     mapping(address => uint256) public shares;
     uint256 constant PRECISION = 10**18;
-
-    mapping(uint256 => address) public dexlist;
 
     event Swap(
         address user,
@@ -79,7 +75,6 @@ contract AMM {
     constructor(Token _token1, Token _token2) {
         token1 = _token1;
         token2 = _token2;
-        listCount = 0;
         pool1daiBalance = IWETH(daiAddress).balanceOf(daiWETHpool);
         pool1wethBalance = IWETH(wethAddress).balanceOf(daiWETHpool);
         pool2daiBalance = IWETH(daiAddress).balanceOf(wethDAIpool);
@@ -181,6 +176,8 @@ contract AMM {
         token1Amount = (token1Balance * _token2Amount) / token2Balance;
     }
 
+    /*
+
     // Calculate WETH Output for Intended DAI Trade on DAI / WETH Pool
     function calculateDaiSwap(uint256 _token1Amount)
         public
@@ -216,6 +213,8 @@ contract AMM {
 
             require(token1Amount < pool2daiBalance, "swap amount too large");
     }
+
+    */
 
     // Enact Token 1 Swap for Fictitious Token Pair
     function swapToken1(uint256 _token1Amount)
@@ -270,6 +269,8 @@ contract AMM {
                 block.timestamp
             );
     }
+
+    /*
 
     // Enact DAI / WETH Swap on Testnet
     function uniswap1(uint256 _token1Amount)
@@ -364,6 +365,8 @@ contract AMM {
                 (block.timestamp + 1200)
             );
     }
+
+    */
 
     // Determine how many tokens will be withdrawn
     function calculateWithdrawAmount(uint256 _share)

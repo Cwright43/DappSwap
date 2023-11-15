@@ -14,6 +14,7 @@ import {
 
 import {
   setContract,
+  setAggregator,
   sharesLoaded,
   token1Loaded,
   token2Loaded,
@@ -35,6 +36,7 @@ import {
 
 import TOKEN_ABI from '../abis/Token.json';
 import AMM_ABI from '../abis/AMM.json';
+import AGGREGATOR_ABI from '../abis/Aggregator.json';
 import config from '../config.json';
 
 // --------------------------------------//
@@ -108,8 +110,8 @@ export const loadDaiWETH = async (provider, chainId, dispatch) => {
 // --------------------------------------//
 
 // Load (DAPP / USD) Address
-export const loadAMM = async (provider, chainId, dispatch) => {
-  const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
+export const loadDappDappUSD = async (provider, chainId, dispatch) => {
+  const amm = new ethers.Contract(config[chainId].dappDappUSD.address, AMM_ABI, provider)
 
   dispatch(setContract(amm))
   return amm
@@ -131,20 +133,12 @@ export const loadDappDappApple = async (provider, chainId, dispatch) => {
   return amm
 }
 
-// Load (DAI / WETH) Address
-export const loadUniswap = async (provider, chainId, dispatch) => {
-  const amm = new ethers.Contract(config[chainId].daiWethUniswap.address, AMM_ABI, provider)
+// Load Aggregator Address
+export const loadAggregator = async (provider, chainId, dispatch) => {
+  const aggregator = new ethers.Contract(config[chainId].aggregator.address, AGGREGATOR_ABI, provider)
 
-  dispatch(setContract(amm))
-  return amm
-}
-
-// Load (WETH / DAI) Address
-export const loadUniswap1 = async (provider, chainId, dispatch) => {
-  const amm = new ethers.Contract(config[chainId].wethDaiUniswap.address, AMM_ABI, provider)
-
-  dispatch(setContract(amm))
-  return amm
+  dispatch(setAggregator(aggregator))
+  return aggregator
 }
 
 // --------------------------------------//
@@ -156,7 +150,8 @@ export const loadUniswap1 = async (provider, chainId, dispatch) => {
 export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const balance1 = await tokens[0].balanceOf(account)
   const balance2 = await tokens[1].balanceOf(account)
-    dispatch(balancesLoaded([
+ 
+  dispatch(balancesLoaded([
     ethers.utils.formatUnits(balance1.toString(), 'ether'),
     ethers.utils.formatUnits(balance2.toString(), 'ether')
   ]))
@@ -170,6 +165,10 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const token2 = await _amm.token2Balance()
   dispatch(token2Loaded(ethers.utils.formatUnits(token2.toString(), 'ether')))
 
+}
+
+export const loadDaiWethBalances = async (_amm, dispatch) => {
+  
   const poolDAI = await _amm.pool1daiBalance()
   dispatch(poolDAILoaded(ethers.utils.formatUnits(poolDAI.toString(), 'ether')))
 
@@ -181,6 +180,7 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
 
   const poolWETH1 = await _amm.pool2wethBalance()
   dispatch(poolWETH1Loaded(ethers.utils.formatUnits(poolWETH1.toString(), 'ether')))
+  
 }
 
 // --------------------------------------//
@@ -232,7 +232,7 @@ export const removeLiquidity = async (provider, amm, shares, dispatch) => {
 // --------------------------------------//
 
 // Swap Functionality
-export const swap = async (provider, amm, token1, token2, inputSymbol, outputSymbol, amount, dispatch) => {
+export const swap = async (provider, _amm, token1, inputSymbol, outputSymbol, amount, dispatch) => {
   try {
 
     dispatch(swapRequest())
@@ -240,17 +240,17 @@ export const swap = async (provider, amm, token1, token2, inputSymbol, outputSym
     let transaction
     const signer = await provider.getSigner()
 
-    transaction = await token1.connect(signer).approve(amm.address, amount)
+    transaction = await token1.connect(signer).approve(_amm.address, amount)
     await transaction.wait()
 
   if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
-      transaction = await amm.connect(signer).uniswap1(amount)
+      transaction = await _amm.connect(signer).uniswap1(amount)
     } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
-      transaction = await amm.connect(signer).uniswap2(amount)
+      transaction = await _amm.connect(signer).uniswap2(amount)
     } else if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
-      transaction = await amm.connect(signer).swapToken1(amount)
+      transaction = await _amm.connect(signer).swapToken1(amount)
     } else {
-      transaction = await amm.connect(signer).swapToken2(amount)
+      transaction = await _amm.connect(signer).swapToken2(amount)
     }
 
     dispatch(swapSuccess(transaction.hash))
