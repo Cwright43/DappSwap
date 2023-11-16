@@ -26,9 +26,9 @@ const Navigation = ({ provider }) => {
   const connectHandler = async () => {
     const provider = await loadProvider(dispatch)
     const account = await loadAccount(dispatch)
-    await loadAggregator(provider, chainId, dispatch)
+    const aggregator = await loadAggregator(provider, chainId, dispatch)
     await loadBalances(amm, tokens, account, dispatch)
-    await loadDaiWethBalances(amm, dispatch)
+    await loadDaiWethBalances(aggregator, dispatch)
   }
 
   const networkHandler = async (e) => {

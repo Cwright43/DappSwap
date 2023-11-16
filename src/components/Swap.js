@@ -16,14 +16,14 @@ import {
   swap,
   loadNetwork,
   loadTokens,
-  loadDappDappUSD,
   loadBalances,
-  loadDaiWethBalances,
+  loadDappDappUSD,
   loadAppleUSD,
   loadDAppApple,
   loadDappAppleUSD,
   loadDappDappApple,
   loadDaiWETH,
+  loadDaiWethBalances,
 } from '../store/interactions'
 
 const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, 
