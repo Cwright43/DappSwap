@@ -6,56 +6,17 @@ import "./Token.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-
-interface IWETH is IERC20 {
-
-    function deposit() external payable;
-
-    function withdraw(uint256 amount) external;
-
-    function balanceOf(address account) external view returns (uint256);
-
-    function approve(address spender, uint amount) external returns (bool);
-
-}
-
-interface IUniswapV2ERC20 {
-
-    function transfer(address to, uint value ) external returns (bool);
-
-    function transferFrom(address from, address to, uint value) external returns (bool);
-}
 
 contract AMM {
     Token public token1;
     Token public token2;
 
-    IWETH public dai;
-    IWETH public weth;
-
     address public owner;
-
-    address public constant wethAddress = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-    address public constant daiAddress = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-    address public constant daiWETHpool = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
-    address public constant wethDAIpool = 0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11;
-    address public constant uniswapV2Router = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-
-    IUniswapV2Router02 public immutable uRouter;
 
     uint256 public token1Balance;
     uint256 public token2Balance;
 
-    uint256 public pool1daiBalance;
-    uint256 public pool1wethBalance;
-    uint256 public pool2daiBalance;
-    uint256 public pool2wethBalance;
-
     uint256 public K;
-    uint256 public K1;
-    uint256 public K2;
 
     uint256 public totalShares;
     mapping(address => uint256) public shares;
@@ -75,14 +36,7 @@ contract AMM {
     constructor(Token _token1, Token _token2) {
         token1 = _token1;
         token2 = _token2;
-        pool1daiBalance = IWETH(daiAddress).balanceOf(daiWETHpool);
-        pool1wethBalance = IWETH(wethAddress).balanceOf(daiWETHpool);
-        pool2daiBalance = IWETH(daiAddress).balanceOf(wethDAIpool);
-        pool2wethBalance = IWETH(wethAddress).balanceOf(wethDAIpool);
-        K1 = pool1daiBalance * pool1wethBalance;
-        K2 = pool2daiBalance * pool2wethBalance;
         owner = msg.sender;
-        uRouter = IUniswapV2Router02(uniswapV2Router);
     }
 
     function addLiquidity(uint256 _token1Amount, uint256 _token2Amount) external {

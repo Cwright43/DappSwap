@@ -30,8 +30,8 @@ async function main() {
   const Aggregator = await hre.ethers.getContractFactory('Aggregator')
 
   // Deploy DAPP / USD liquidity pools
-  const amm = await AMM.deploy(dapp.address, usd.address)
-  const appleswap = await AMM.deploy(dapp.address, usd.address)
+  const dappDappUSD = await AMM.deploy(dapp.address, usd.address)
+  const appleDappUSD = await AMM.deploy(dapp.address, usd.address)
   
   // COME BACK - No need for this
   const aggregator = await Aggregator.deploy()
@@ -44,8 +44,8 @@ async function main() {
   const dappDappApple = await AMM.deploy(dapp.address, apple.address)
   const appleDappApple = await AMM.deploy(dapp.address, apple.address)
 
-  console.log(`DApp Swap contract deployed to: ${amm.address}\n`)
-  console.log(`AppleSwap contract deployed to: ${appleswap.address}\n`)
+  console.log(`DApp Swap contract deployed to: ${dappDappUSD.address}\n`)
+  console.log(`AppleSwap contract deployed to: ${appleDappUSD.address}\n`)
   console.log(`Aggregator contract deployed to: ${aggregator.address}\n`)
 
   console.log(`APPL / USD pool on Dapp Swap deployed to: ${dappAppleUSD.address}\n`)
