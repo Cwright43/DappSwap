@@ -14,14 +14,9 @@ import {
 
 import {
   setContract,
-  setAggregator,
   sharesLoaded,
   token1Loaded,
   token2Loaded,
-  poolDAILoaded,
-  poolWETHLoaded,
-  poolDAI1Loaded,
-  poolWETH1Loaded,
   swapsLoaded,
   depositRequest,
   depositSuccess,
@@ -96,15 +91,6 @@ export const loadDAppApple = async (provider, chainId, dispatch) => {
   dispatch(setSymbols([await dapp.symbol(), await apple.symbol()]))
 }
 
-// Load DAI / WETH Token Pair
-export const loadDaiWETH = async (provider, chainId, dispatch) => {
-  const dai = new ethers.Contract(config[chainId].dai.address, TOKEN_ABI, provider)
-  const weth = new ethers.Contract(config[chainId].weth.address, TOKEN_ABI, provider)
-
-  dispatch(setContracts([dai, weth]))
-  dispatch(setSymbols([await dai.symbol(), await weth.symbol()]))
-}
-
 // --------------------------------------//
 //          Load Liquidity Pools         //
 // --------------------------------------//
@@ -133,19 +119,11 @@ export const loadDappDappApple = async (provider, chainId, dispatch) => {
   return amm
 }
 
-// Load Aggregator Address
-export const loadAggregator = async (provider, chainId, dispatch) => {
-  const aggregator = new ethers.Contract(config[chainId].aggregator.address, AGGREGATOR_ABI, provider)
-
-  dispatch(setAggregator(aggregator))
-  return aggregator
-}
-
 // --------------------------------------//
 //        Load Balances and Shares       //
 // --------------------------------------//
 
-// Load Account Balances for Active Tokens, DAI, and WETH
+// Load Account Balances for Active Tokens
 
 export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const balance1 = await tokens[0].balanceOf(account)
@@ -165,22 +143,6 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const token2 = await _amm.token2Balance()
   dispatch(token2Loaded(ethers.utils.formatUnits(token2.toString(), 'ether')))
 
-}
-
-export const loadDaiWethBalances = async (_amm, dispatch) => {
-  
-  const poolDAI = await _amm.pool1daiBalance()
-  dispatch(poolDAILoaded(ethers.utils.formatUnits(poolDAI.toString(), 'ether')))
-
-  const poolWETH = await _amm.pool1wethBalance()
-  dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
-
-  const poolDAI1 = await _amm.pool2daiBalance()
-  dispatch(poolDAI1Loaded(ethers.utils.formatUnits(poolDAI1.toString(), 'ether')))
-
-  const poolWETH1 = await _amm.pool2wethBalance()
-  dispatch(poolWETH1Loaded(ethers.utils.formatUnits(poolWETH1.toString(), 'ether')))
-  
 }
 
 // --------------------------------------//
@@ -243,11 +205,7 @@ export const swap = async (provider, _amm, token1, inputSymbol, outputSymbol, am
     transaction = await token1.connect(signer).approve(_amm.address, amount)
     await transaction.wait()
 
-  if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
-      transaction = await _amm.connect(signer).uniswap1(amount)
-    } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
-      transaction = await _amm.connect(signer).uniswap2(amount)
-    } else if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
+  if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await _amm.connect(signer).swapToken1(amount)
     } else {
       transaction = await _amm.connect(signer).swapToken2(amount)

@@ -202,20 +202,6 @@ function App() {
       const dappDappApple = new ethers.Contract(config[1].dappDappApple.address, AMM_ABI, provider)
       setDappDappApple(dappDappApple)
 
-      /*
-
-    // IS THIS NEEDED?
-    // Load Dapp DAI / WETH Pool Address
-      const daiWethUniswap = new ethers.Contract(config[1].daiWethUniswap.address, AMM_ABI, provider)
-      setDaiWethUniswap(daiWethUniswap)
-
-    // IS THIS NEEDED?
-    // Load Dapp WETH / DAI Pool Address
-      const wethDaiUniswap = new ethers.Contract(config[1].wethDaiUniswap.address, AMM_ABI, provider)
-      setWethDaiUniswap(wethDaiUniswap)
-
-      */
-
     // Load UniswapV2 Router Address
       const router = new ethers.Contract('0x7a250d5630b4cf539739df2c5dacb4c659f2488d', routerArtifact.abi, provider)
       setRouter(router)
@@ -273,10 +259,6 @@ function App() {
       <Navigation  />
     <>
   <Row>
-      <h4 className="text-center">Total DAI in DAI/WETH: {parseFloat(poolDAI).toFixed(2)}</h4>
-      <h4 className="text-center">Total WETH in DAI/WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
-      <h4 className="text-center">Total DAI in WETH/DAI: {parseFloat(poolDAI1).toFixed(2)}</h4>
-      <h4 className="text-center">Total WETH in WETH/DAI: {parseFloat(poolWETH1).toFixed(2)}</h4>
     <Col>
       <Button
         onClick={() => setOpen1(!open1)}

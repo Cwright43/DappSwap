@@ -22,12 +22,11 @@ import {
   loadDAppApple,
   loadDappAppleUSD,
   loadDappDappApple,
-  loadDaiWETH,
-  loadDaiWethBalances,
 } from '../store/interactions'
 
-const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, 
-                daiAccountBalance, wethAccountBalance } ) => {
+const Swap = ({ dappAccountBalance, 
+                usdAccountBalance, 
+                appleAccountBalance } ) => {
 
     const dispatch = useDispatch()
 
@@ -81,23 +80,8 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
         }
 
       await loadBalances(amm, tokens, account, dispatch)
-      await loadDaiWethBalances(aggregator, dispatch)
 
-      if (inputToken === 'DAI' || outputToken === 'WETH' ) {
-          setInputAmount(e.target.value)
-          const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
-          const result = await aggregator.calculateDaiSwap(_token1Amount)
-          const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
-          setOutputAmount(_token2Amount.toString())
-          setExchangeRate((_token2Amount/_token1Amount) * 10e17)
-        } else if (inputToken === 'WETH' || outputToken === 'DAI') {
-          setInputAmount(e.target.value)
-          const _token2Amount = ethers.utils.parseUnits(e.target.value, 'ether')
-          const result = await aggregator.calculateWethSwap(_token2Amount)
-          const _token1Amount = ethers.utils.formatUnits(result.toString(), 'ether')
-          setOutputAmount(_token1Amount.toString())
-          setExchangeRate((_token1Amount/_token2Amount) * 10e17)
-          } else if (protocol === 1) {
+          if (protocol === 1) {
           setInputAmount(e.target.value)
           const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
           const result = await amm.calculateToken1Swap(_token1Amount)
@@ -129,18 +113,13 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     
     // Enact Swap Function Based Upon Protocol Orientation
         
-        if (inputToken === 'DAI' && outputToken === 'WETH') {
-            await swap(provider, aggregator, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
-          } else if (inputToken === 'WETH' && outputToken === 'DAI') {
-            await swap(provider, aggregator, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
-          } else if (protocol === 1) {
+            if (protocol === 1) {
             await swap(provider, amm, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
           } else if (protocol === 2) {
             await swap(provider, amm, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
           }
 
         await loadBalances(amm, tokens, account, dispatch)
-        await loadDaiWethBalances(aggregator, dispatch)
         await getPrice()
 
         setShowAlert(true)
@@ -159,18 +138,10 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
           return
         }
 
-      // Limit Drop-Down Menu When Selecting Testnet Tokens
-        if (inputToken === 'DAI') {
-          setOutputToken('WETH')
-        } else if (inputToken === 'WETH') {
-          setOutputToken('DAI')
-        }
-
       // Declare Protocol From Token Pair Orientation
         if ((inputToken === 'DAPP' && outputToken === 'USD') ||
             (inputToken === 'APPL' && outputToken === 'USD') ||
-            (inputToken === 'DAPP' && outputToken === 'APPL') || 
-            (inputToken === 'DAI' && outputToken === 'WETH'))
+            (inputToken === 'DAPP' && outputToken === 'APPL'))
               {
                setProtocol(1)
               } else {
@@ -190,12 +161,9 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
         } else if ((inputToken === 'DAPP' && outputToken === 'APPL') || (inputToken === 'APPL' && outputToken === 'DAPP')) {
             await loadDAppApple(provider, chainId, dispatch);
             await loadDappDappApple(provider, chainId, dispatch);
-        } else if ((inputToken === 'DAI' && outputToken === 'WETH') || (inputToken === 'WETH' && outputToken === 'DAI')) {
-          await loadDaiWETH(provider, chainId, dispatch);
-        }
+        } 
 
           await loadBalances(amm, tokens, account, dispatch);
-          await loadDaiWethBalances(aggregator, dispatch);
 
         if (protocol === 1) {
            setPrice((token2 / token1))
@@ -227,10 +195,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                       parseFloat(usdAccountBalance).toFixed(2)
                     ) : inputToken === 'APPL' ? (
                       parseFloat(appleAccountBalance).toFixed(2)
-                    ) : inputToken === 'DAI' ? (
-                      parseFloat(daiAccountBalance).toFixed(2)
-                    ) : inputToken === 'WETH' ? (
-                      parseFloat(wethAccountBalance).toFixed(2)
                     ) : 0
                   }
                 </Form.Text>
@@ -251,8 +215,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >USD</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >APPL</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAI</Dropdown.Item>
-                  <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >WETH</Dropdown.Item>
                 </DropdownButton>
               </InputGroup>
             </Row>
@@ -267,10 +229,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                       parseFloat(usdAccountBalance).toFixed(2)
                     ) : outputToken === 'APPL' ? (
                       parseFloat(appleAccountBalance).toFixed(2)
-                    ) : outputToken === 'DAI' ? (
-                      parseFloat(daiAccountBalance).toFixed(2)
-                    ) : outputToken === 'WETH' ? (
-                      parseFloat(wethAccountBalance).toFixed(2)
                     ) : 0
                   }
                 </Form.Text>
@@ -286,19 +244,9 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                   variant="outline-secondary"
                   title={outputToken ? outputToken : "Select Token"}
                 >
-                  { inputToken !== 'WETH' && inputToken !=='DAI' && (
-                    <>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>USD</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>APPL</Dropdown.Item>
-                    </>
-                  )}
-                { inputToken =='WETH' && (
-                  <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>DAI</Dropdown.Item>
-                )}
-                { inputToken =='DAI' && (
-                  <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>WETH</Dropdown.Item>
-                )}
                 </DropdownButton>
               </InputGroup>
             </Row>

@@ -9,7 +9,6 @@ import logo from '../logo.png';
 import { loadProvider,
          loadAccount, 
          loadBalances,
-         loadDaiWethBalances,
          loadAggregator,
         } from '../store/interactions'
 
@@ -24,11 +23,8 @@ const Navigation = ({ provider }) => {
   const dispatch = useDispatch()
 
   const connectHandler = async () => {
-    const provider = await loadProvider(dispatch)
     const account = await loadAccount(dispatch)
-    const aggregator = await loadAggregator(provider, chainId, dispatch)
     await loadBalances(amm, tokens, account, dispatch)
-    await loadDaiWethBalances(aggregator, dispatch)
   }
 
   const networkHandler = async (e) => {
