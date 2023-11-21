@@ -1,13 +1,5 @@
-# Sample Hardhat Project
+# Dapp Swap - Decentralized Cryptocurrency Exchange
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Dapp Swap is the first of two DEX websites used for purposes of simulating three (3) unique cryptocurrencies created with the deployment of the standardized AMM smart contract. Dapp Swapp allows for all of the basic features of a decentralized exchange including swaps, deposits, and withdrawls.
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+Three unique liquidity pool addresses are attributed to Dapp Swapp, allowing for specific exchange rates to be set and then tested for using the Turbo Shell DEX Aggregator.
