@@ -6,10 +6,8 @@ import Blockies from 'react-blockies'
 
 import logo from '../logo.png';
 
-import { loadProvider,
-         loadAccount, 
+import { loadAccount, 
          loadBalances,
-         loadAggregator,
         } from '../store/interactions'
 
 import config from '../config.json'
@@ -43,7 +41,7 @@ const Navigation = ({ provider }) => {
         height="40"
         className="d-inline-block align-top mx-3"
       />
-      <Navbar.Brand href="#">Dapp University AMM</Navbar.Brand>
+      <Navbar.Brand href="#">Dapp Swap AMM</Navbar.Brand>
 
       <Navbar.Toggle aria-controls="nav" />
       <Navbar.Collapse id="nav" className="justify-content-end">

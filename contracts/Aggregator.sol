@@ -36,20 +36,34 @@ contract Aggregator {
 
     address public constant wethAddress = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant daiAddress = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+
     address public constant daiWETHpool = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
     address public constant wethDAIpool = 0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11;
+
+    address public constant sushiDaiWethPool = 0x4D734eAF2102407825f45571D51FC7C4DaE86fF8;
+    address public constant sushiWethDaiPool = 0x6FF62bfb8c12109E8000935A6De54daD83a4f39f;
+
     address public constant uniswapV2Router = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+    address public constant sushiswapV2Router = 0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F;
 
     IUniswapV2Router02 public immutable uRouter;
+    IUniswapV2Router02 public immutable sRouter;
 
     uint256 public pool1daiBalance;
     uint256 public pool1wethBalance;
     uint256 public pool2daiBalance;
     uint256 public pool2wethBalance;
 
+    uint256 public pool3daiBalance;
+    uint256 public pool3wethBalance;
+    uint256 public pool4daiBalance;
+    uint256 public pool4wethBalance;
+
     uint256 public K;
     uint256 public K1;
     uint256 public K2;
+    uint256 public K3;
+    uint256 public K4;
 
     uint256 public totalShares;
     mapping(address => uint256) public shares;
@@ -71,10 +85,21 @@ contract Aggregator {
         pool1wethBalance = IWETH(wethAddress).balanceOf(daiWETHpool);
         pool2daiBalance = IWETH(daiAddress).balanceOf(wethDAIpool);
         pool2wethBalance = IWETH(wethAddress).balanceOf(wethDAIpool);
+        
         K1 = pool1daiBalance * pool1wethBalance;
         K2 = pool2daiBalance * pool2wethBalance;
+        
+        pool3daiBalance = IERC20(daiAddress).balanceOf(sushiDaiWethPool);
+        pool3wethBalance = IERC20(wethAddress).balanceOf(sushiDaiWethPool);
+        pool4daiBalance = IERC20(daiAddress).balanceOf(sushiWethDaiPool);
+        pool4wethBalance = IERC20(wethAddress).balanceOf(sushiWethDaiPool);
+        
+        K3 = pool3daiBalance * pool3wethBalance;
+        K4 = pool4daiBalance * pool4wethBalance;
+
         owner = msg.sender;
         uRouter = IUniswapV2Router02(uniswapV2Router);
+        sRouter = IUniswapV2Router02(sushiswapV2Router);
     }
 
     // Calculate WETH Output for Intended DAI Trade on DAI / WETH Pool

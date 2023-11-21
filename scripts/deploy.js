@@ -24,7 +24,6 @@ async function main() {
   await apple.deployed()
   console.log(`Apple Token deployed to: ${apple.address}\n`)
 
-  
   // Deploy AMM & Aggregator Contracts
   const AMM = await hre.ethers.getContractFactory('AMM')
   const Aggregator = await hre.ethers.getContractFactory('Aggregator')
@@ -32,9 +31,6 @@ async function main() {
   // Deploy DAPP / USD liquidity pools
   const dappDappUSD = await AMM.deploy(dapp.address, usd.address)
   const appleDappUSD = await AMM.deploy(dapp.address, usd.address)
-  
-  // COME BACK - No need for this
-  const aggregator = await Aggregator.deploy()
 
   // Deploy APPL / USD liquidity pools
   const dappAppleUSD = await AMM.deploy(apple.address, usd.address)
@@ -44,15 +40,13 @@ async function main() {
   const dappDappApple = await AMM.deploy(dapp.address, apple.address)
   const appleDappApple = await AMM.deploy(dapp.address, apple.address)
 
-  console.log(`DApp Swap contract deployed to: ${dappDappUSD.address}\n`)
-  console.log(`AppleSwap contract deployed to: ${appleDappUSD.address}\n`)
-  console.log(`Aggregator contract deployed to: ${aggregator.address}\n`)
+  console.log(`Dappswap  - DAPP / USD pool deployed to: ${dappDappUSD.address}\n`)
+  console.log(`Dappswap  - APPL / USD pool deployed to: ${dappAppleUSD.address}\n`)
+  console.log(`Dappswap  - DAPP / APPL pool deployed to: ${dappDappApple.address}\n`)
 
-  console.log(`APPL / USD pool on Dapp Swap deployed to: ${dappAppleUSD.address}\n`)
-  console.log(`APPL / USD pool on Apple Swap deployed to: ${appleAppleUSD.address}\n`)
-
-  console.log(`DAPP / APPL pool on Dapp Swap deployed to: ${dappDappApple.address}\n`)
-  console.log(`DAPP / APPL pool on Apple Swap deployed to: ${appleDappApple.address}\n`)
+  console.log(`AppleSwap - DAPP / USD pool deployed to: ${appleDappUSD.address}\n`)
+  console.log(`AppleSwap - APPL / USD pool deployed to: ${appleAppleUSD.address}\n`)
+  console.log(`AppleSwap - DAPP / APPL pool deployed to: ${appleDappApple.address}\n`)
 
 }
 

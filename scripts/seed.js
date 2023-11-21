@@ -87,10 +87,6 @@ async function main() {
   const appleDappUSD = await ethers.getContractAt('AMM', config[chainId].appleDappUSD.address)
   console.log(`AppleSwap fetched: ${appleDappUSD.address}\n`)
 
-  // Fetch Aggregator
-  const aggregator = await ethers.getContractAt('AMM', config[chainId].aggregator.address)
-  console.log(`Aggregator fetched: ${aggregator.address}\n`)
-
   // Fetch APPL / USD Pool on Dapp Swap
   const dappAppleUSD = await ethers.getContractAt('AMM', config[chainId].dappAppleUSD.address)
   console.log(`APPL / USD Pool on Dapp Swap fetched: ${dappAppleUSD.address}\n`)

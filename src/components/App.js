@@ -31,9 +31,6 @@ import TokenPair2 from '../TokenPair2.png';
 import TokenPair3 from '../TokenPair3.png';
 import backgroundimage from '../DappBackground.jpg';
 
-import wethIcon from '../WETH.png'
-import daiIcon from '../DAI.png'
-
 // ABIs: Import your contract ABIs here
 import AMM_ABI from '../abis/AMM.json'
 import TOKEN_ABI from '../abis/Token.json'
@@ -51,17 +48,10 @@ import {
 
 function App() {
 
-    const routerArtifact = require('@uniswap/v2-periphery/build/UniswapV2Router02.json')
-    const erc20Abi = require('../abis/erc20.json')
-    const wethAbi = require('../abis/weth.json')
-
   // Set Token Addresses
     const [usd, setUSD] = useState(null)
     const [dapp, setDapp] = useState(null)
     const [apple, setApple] = useState(null)
-    const [dai, setDAI] = useState(null)
-    const [weth, setWETH] = useState(null)
-    const [router, setRouter] = useState(null)
 
   // Set rate values for each trading pair
     const [rate1, setRate1] = useState(null)
@@ -82,18 +72,6 @@ function App() {
   // Set Address for DAPP / APPL Pool
     const [dappDappApple, setDappDappApple] = useState(null)
 
-  // Link Address for DAI / WETH Pool on Uniswap
-    const [daiWethUniswap, setDaiWethUniswap] = useState(null)
-
-  // Link Address for WETH / DAI Pool on Uniswap
-    const [wethDaiUniswap, setWethDaiUniswap] = useState(null)
-
-  // Load DAI/WETH Balances from Mainnet
-    const poolDAI = useSelector(state => state.amm.poolDAI)
-    const poolWETH = useSelector(state => state.amm.poolWETH)
-    const poolDAI1 = useSelector(state => state.amm.poolDAI1)
-    const poolWETH1 = useSelector(state => state.amm.poolWETH1)
-
   // Assign Active User Account and Signer
     const [account, setAccount] = useState(null)
     const [signer, setSigner] = useState(null)
@@ -107,8 +85,6 @@ function App() {
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
     const [usdAccountBalance, setUSDAccountBalance] = useState(0)
     const [appleAccountBalance, setAppleAccountBalance] = useState(0)
-    const [daiAccountBalance, setDAIAccountBalance] = useState(0)
-    const [wethAccountBalance, setWETHAccountBalance] = useState(0)
 
   // Set Balances for APPL / USD
     const [appleBalance, setAppleBalance] = useState(0)
@@ -162,12 +138,6 @@ function App() {
 
       let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
       setApple(apple)
-
-      let dai = new ethers.Contract(config[1].dai.address, erc20Abi, provider)
-      setDAI(dai)
-
-      let weth = new ethers.Contract(config[1].weth.address, wethAbi, provider)
-      setWETH(weth)
    
     // Load Token Account Balances Individually
       let dappAccountBalance = await dapp.balanceOf(accounts[0])
@@ -182,14 +152,6 @@ function App() {
       appleAccountBalance = ethers.utils.formatUnits(appleAccountBalance, 18)
       setAppleAccountBalance(appleAccountBalance)
 
-      let daiAccountBalance = await dai.balanceOf(accounts[0])
-      daiAccountBalance = ethers.utils.formatUnits(daiAccountBalance, 18)
-      setDAIAccountBalance(daiAccountBalance)
-
-      let wethAccountBalance = await weth.balanceOf(accounts[0])
-      wethAccountBalance = ethers.utils.formatUnits(wethAccountBalance, 18)
-      setWETHAccountBalance(wethAccountBalance)
-
     // Load Dapp DAPP / USD Pool Address
       const dappDappUSD = new ethers.Contract(config[1].dappDappUSD.address, AMM_ABI, provider)
       setDappDappUSD(dappDappUSD)
@@ -201,10 +163,6 @@ function App() {
     // Load Dapp DAPP / APPL Pool Address
       const dappDappApple = new ethers.Contract(config[1].dappDappApple.address, AMM_ABI, provider)
       setDappDappApple(dappDappApple)
-
-    // Load UniswapV2 Router Address
-      const router = new ethers.Contract('0x7a250d5630b4cf539739df2c5dacb4c659f2488d', routerArtifact.abi, provider)
-      setRouter(router)
 
     // Load Balances for DAPP / USD
       let balance1 = await dapp.balanceOf(dappDappUSD.address)
@@ -429,8 +387,6 @@ function App() {
                                           dappAccountBalance={dappAccountBalance}
                                           usdAccountBalance={usdAccountBalance}
                                           appleAccountBalance={appleAccountBalance}
-                                          daiAccountBalance={daiAccountBalance}
-                                          wethAccountBalance={wethAccountBalance}
                                           />} />
         <Route path="/deposit" element={<Deposit />} />
         <Route path="/withdraw" element={<Withdraw />} />
