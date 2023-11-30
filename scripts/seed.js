@@ -83,21 +83,21 @@ async function main() {
   const dappDappUSD = await ethers.getContractAt('AMM', config[chainId].dappDappUSD.address)
   console.log(`AMM Swap fetched: ${dappDappUSD.address}\n`)
 
-  // Fetch AppleSwap
-  const appleDappUSD = await ethers.getContractAt('AMM', config[chainId].appleDappUSD.address)
-  console.log(`AppleSwap fetched: ${appleDappUSD.address}\n`)
-
   // Fetch APPL / USD Pool on Dapp Swap
   const dappAppleUSD = await ethers.getContractAt('AMM', config[chainId].dappAppleUSD.address)
   console.log(`APPL / USD Pool on Dapp Swap fetched: ${dappAppleUSD.address}\n`)
 
-  // Fetch APPL / USD Pool on Apple Swap
-  const appleAppleUSD = await ethers.getContractAt('AMM', config[chainId].appleAppleUSD.address)
-  console.log(`APPL / USD Pool on Apple Swap fetched: ${appleAppleUSD.address}\n`)
-
   // Fetch DAPP / APPLE Pool on Dapp Swap
   const dappDappApple = await ethers.getContractAt('AMM', config[chainId].dappDappApple.address)
   console.log(`DAPP / APPL Pool on Dapp Swap fetched: ${dappDappApple.address}\n`)
+
+  // Fetch AppleSwap
+  const appleDappUSD = await ethers.getContractAt('AMM', config[chainId].appleDappUSD.address)
+  console.log(`AppleSwap fetched: ${appleDappUSD.address}\n`)
+
+  // Fetch APPL / USD Pool on Apple Swap
+  const appleAppleUSD = await ethers.getContractAt('AMM', config[chainId].appleAppleUSD.address)
+  console.log(`APPL / USD Pool on Apple Swap fetched: ${appleAppleUSD.address}\n`)
 
   // Fetch DAPP / APPLE Pool on Apple Swap
   const appleDappApple = await ethers.getContractAt('AMM', config[chainId].appleDappApple.address)

@@ -29,7 +29,11 @@ const Charts = () => {
   }, [provider, amm, dispatch])
 
   return (
-    <div>
+    <div
+      style={{
+      backgroundColor: "white",
+      }}
+    >
       {provider && amm ? (
         <div>
           <Chart
